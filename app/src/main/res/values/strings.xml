@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DuEnem</string>
+    <string name="title_activity_question">Question</string>
 </resources>
