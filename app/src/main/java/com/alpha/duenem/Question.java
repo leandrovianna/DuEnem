@@ -1,4 +1,4 @@
-package com.duenem;
+package com.alpha.duenem;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,7 +22,7 @@ public class Question  implements Serializable {
     }
 
     public void buildContent(Activity activity, ViewGroup parent){
-        TextView text = (TextView) activity.getLayoutInflater().inflate(R.layout.simple_text_content, parent, false);
+        TextView text = (TextView) activity.getLayoutInflater().inflate(com.alpha.duenem.R.layout.simple_text_content, parent, false);
         text.setText(this.text);
         parent.addView(text);
     }

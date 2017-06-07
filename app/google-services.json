@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "851016398350",
+    "firebase_url": "https://fir-duenem.firebaseio.com",
+    "project_id": "firebase-duenem",
+    "storage_bucket": "firebase-duenem.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851016398350:android:5a5410a5234b3ee4",
+        "android_client_info": {
+          "package_name": "com.alpha.duenem"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851016398350-eagemka39u9kr4lprkcbsanis5giaikc.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "851016398350-mfg8kjqo8ehtb32h2agb6usgc6jnpvh4.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "851016398350-6og0eqvvjhm2ed7n95tkt64nv2rgp67n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alpha.duenem",
+            "certificate_hash": "73e7b1f1bba081cad404f76f7d359d7ac557dedd"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUWskMOPAqi1wJ54mPPpnfMwbyQX3UAXI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851016398350-eagemka39u9kr4lprkcbsanis5giaikc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
