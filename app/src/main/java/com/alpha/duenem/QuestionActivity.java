@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class QuestionActivity extends AppCompatActivity {
 
@@ -22,14 +23,16 @@ public class QuestionActivity extends AppCompatActivity {
         LinearLayout layout = (LinearLayout) findViewById(com.alpha.duenem.R.id.content_question);
         question.buildContent(this, layout);
 
+        final String username = getIntent().getStringExtra("USERNAME");
+        question.addText("User signed: "+username);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(com.alpha.duenem.R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "User sign out: "+username, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-
 
             }
         });

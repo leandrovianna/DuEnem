@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.alpha.duenem.SignInActivity"
+    tools:showIn="@layout/activity_sign_in"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
+
+    <Button
+        android:id="@+id/googlesinginBt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="googleSignInButtonClicked"
+        android:text="Entre com o Google"
+        android:layout_marginTop="55dp"
+        app:layout_constraintTop_toBottomOf="@+id/subtext"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <Button
+        android:id="@+id/emailsigninBt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="emailSignInButtonClicked"
+        android:text="Entre com seu e-mail"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/googlesinginBt"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/signin_welcome_text"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/subtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/signin_welcome_subtext"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/text"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <Button
+        android:id="@+id/signoutBt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="signoutButtonClicked"
+        android:text="Sair da conta"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="55dp"
+        app:layout_constraintTop_toBottomOf="@+id/subtext"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+</android.support.constraint.ConstraintLayout>
