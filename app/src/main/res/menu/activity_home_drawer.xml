@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <!--Example-->
+        <!--<item-->
+            <!--android:id="@+id/nav_camera"-->
+            <!--android:icon="@drawable/ic_menu_camera"-->
+            <!--android:title="Import" />-->
+        <item
+            android:id="@+id/perfil"
+            android:title="Sua conta"
+            />
+
+        <item
+            android:id="@+id/materialestudo"
+            android:title="Material de Estudo"
+            />
+
+        <item
+            android:id="@+id/treinar"
+            android:title="Treinar"
+            />
+
+    </group>
+
+</menu>
