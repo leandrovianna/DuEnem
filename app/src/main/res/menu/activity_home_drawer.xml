@@ -10,6 +10,7 @@
         <item
             android:id="@+id/perfil"
             android:title="Sua conta"
+            android:icon="@drawable/ic_account_box_black_24dp"
             />
 
         <item

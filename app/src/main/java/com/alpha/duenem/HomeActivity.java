@@ -1,12 +1,13 @@
 package com.alpha.duenem;
 
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.widget.CursorAdapter;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -17,14 +18,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,6 +34,7 @@ public class HomeActivity extends AppCompatActivity
     private ActionBarDrawerToggle mToggle;
 
     private FirebaseAuth mAuth;
+    private ProfilePhotoTarget mProfilePhotoHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         mDrawer.removeDrawerListener(mToggle);
+        Picasso.with(this).cancelRequest(mProfilePhotoHandler);
         super.onDestroy();
     }
 
@@ -131,13 +133,15 @@ public class HomeActivity extends AppCompatActivity
     private void updateDrawerHeaderUI(FirebaseUser user) {
         View headerView = ((NavigationView) findViewById(R.id.nav_view)).getHeaderView(0);
         ImageView avatar = (ImageView) headerView.findViewById(R.id.avatar);
+        mProfilePhotoHandler = new ProfilePhotoTarget(avatar);
         TextView username = (TextView) headerView.findViewById(R.id.username);
         TextView email = (TextView) headerView.findViewById(R.id.email);
 
         if (user != null) {
             Log.d(TAG, "User photo url: "+user.getPhotoUrl());
 
-            Picasso.with(this).load(user.getPhotoUrl()).into(avatar);
+            Picasso.with(this).load(user.getPhotoUrl()).into(mProfilePhotoHandler);
+
             username.setText(user.getDisplayName());
             email.setText(user.getEmail());
         } else {
@@ -145,5 +149,28 @@ public class HomeActivity extends AppCompatActivity
             username.setText(getString(R.string.app_name));
             email.setText("");
         }
+    }
+
+    private class ProfilePhotoTarget implements Target {
+        private ImageView mView;
+
+        ProfilePhotoTarget(ImageView avatarView) {
+            this.mView = avatarView;
+        }
+
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            RoundedBitmapDrawable drawable = RoundedBitmapDrawableFactory.create(HomeActivity.this.getResources(), bitmap);
+            drawable.setCircular(true);
+            mView.setImageDrawable(drawable);
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+            mView.setImageResource(R.mipmap.ic_launcher);
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {}
     }
 }
