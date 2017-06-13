@@ -1,39 +1,35 @@
 {
   "project_info": {
-    "project_number": "851016398350",
-    "firebase_url": "https://fir-duenem.firebaseio.com",
-    "project_id": "firebase-duenem",
-    "storage_bucket": "firebase-duenem.appspot.com"
+    "project_number": "4321504433",
+    "firebase_url": "https://duenem-170600.firebaseio.com",
+    "project_id": "duenem-170600",
+    "storage_bucket": "duenem-170600.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:851016398350:android:5a5410a5234b3ee4",
+        "mobilesdk_app_id": "1:4321504433:android:b4a191ad095bc58a",
         "android_client_info": {
-          "package_name": "com.alpha.duenem"
+          "package_name": "com.alpha2.duenem"
         }
       },
       "oauth_client": [
         {
-          "client_id": "851016398350-eagemka39u9kr4lprkcbsanis5giaikc.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "851016398350-mfg8kjqo8ehtb32h2agb6usgc6jnpvh4.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "851016398350-6og0eqvvjhm2ed7n95tkt64nv2rgp67n.apps.googleusercontent.com",
+          "client_id": "4321504433-el5toisgj3nnku5anhveti0v6vmqfmm3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.alpha.duenem",
+            "package_name": "com.alpha2.duenem",
             "certificate_hash": "73e7b1f1bba081cad404f76f7d359d7ac557dedd"
           }
+        },
+        {
+          "client_id": "4321504433-o70oil27u895os86gooq9rhsv0tn77p9.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBUWskMOPAqi1wJ54mPPpnfMwbyQX3UAXI"
+          "current_key": "AIzaSyC4YxL0f5NYk8UihG1c3CI7d8cGxiO2dAM"
         }
       ],
       "services": {
@@ -44,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "851016398350-eagemka39u9kr4lprkcbsanis5giaikc.apps.googleusercontent.com",
+              "client_id": "4321504433-o70oil27u895os86gooq9rhsv0tn77p9.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

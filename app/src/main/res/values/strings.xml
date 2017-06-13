@@ -3,12 +3,16 @@
     <string name="title_main_activity">MainActivity</string>
     <string name="title_activity_question">Question</string>
 
-    <string name="web_client_id">851016398350-eagemka39u9kr4lprkcbsanis5giaikc.apps.googleusercontent.com</string>
+    <string name="google_play_console_web_client_id">851016398350-eagemka39u9kr4lprkcbsanis5giaikc.apps.googleusercontent.com</string>
 
     <string name="title_activity_sign_in">Entre em sua conta</string>
     <string name="signin_welcome_text">Bem vindo ao DuEnem.</string>
     <string name="signin_welcome_subtext">Para aproveitar o App, crie sua conta.</string>
-    <string name="title_activity_home">HomeActivity</string>
+    <string name="twitter_sign_in_button_text">Entre com o Twitter</string>
+    <string name="sign_in_out">Encerrar sessão</string>
+
+    <string name="message_sign_in_error">Não foi possível entrar.</string>
+    <string name="message_play_services_error">Ops. Algum problema com a Google Play Services.</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

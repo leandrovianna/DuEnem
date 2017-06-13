@@ -1,19 +1,18 @@
-package com.alpha.duenem;
+package com.alpha2.duenem;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.alpha2.duenem.signin.SignInActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.alpha.duenem.R.layout.activity_main);
+        setContentView(com.alpha2.duenem.R.layout.activity_main);
     }
 
     public void testSignIn(View v) {

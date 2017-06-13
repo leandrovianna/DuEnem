@@ -1,11 +1,7 @@
-package com.alpha.duenem;
+package com.alpha2.duenem;
 
 import android.app.Activity;
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -22,7 +18,7 @@ public class Question  implements Serializable {
     }
 
     public void buildContent(Activity activity, ViewGroup parent){
-        TextView text = (TextView) activity.getLayoutInflater().inflate(com.alpha.duenem.R.layout.simple_text_content, parent, false);
+        TextView text = (TextView) activity.getLayoutInflater().inflate(com.alpha2.duenem.R.layout.simple_text_content, parent, false);
         text.setText(this.text);
         parent.addView(text);
     }

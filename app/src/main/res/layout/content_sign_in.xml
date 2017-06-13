@@ -5,30 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.alpha.duenem.SignInActivity"
+    tools:context="com.alpha2.duenem.signin.SignInActivity"
     tools:showIn="@layout/activity_sign_in"
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp">
 
-    <Button
-        android:id="@+id/googlesinginBt"
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/googleSignInBt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="googleSignInButtonClicked"
-        android:text="Entre com o Google"
         android:layout_marginTop="55dp"
         app:layout_constraintTop_toBottomOf="@+id/subtext"
+        android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
-        android:id="@+id/emailsigninBt"
+        android:id="@+id/twitterSignInBt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="emailSignInButtonClicked"
-        android:text="Entre com seu e-mail"
+        android:text="@string/twitter_sign_in_button_text"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/googlesinginBt"
+        app:layout_constraintTop_toBottomOf="@+id/googleSignInBt"
+        android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -53,6 +52,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/text"
         android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="signoutButtonClicked"
-        android:text="Sair da conta"
+        android:text="@string/sign_in_out"
         android:layout_marginStart="16dp"
         android:layout_marginTop="55dp"
         app:layout_constraintTop_toBottomOf="@+id/subtext"
