@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.alpha2.duenem.R;
@@ -56,13 +57,6 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        findViewById(R.id.twitterSignInBt).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                twitterSignInButtonClicked();
-            }
-        });
-
         findViewById(R.id.googleSignInBt).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,14 +80,13 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     private void updateUI(FirebaseUser currentUser) {
+        hideProgressBar();
         if (currentUser == null) {
             findViewById(R.id.subtext).setVisibility(View.VISIBLE);
-            findViewById(R.id.twitterSignInBt).setVisibility(View.VISIBLE);
             findViewById(R.id.googleSignInBt).setVisibility(View.VISIBLE);
             findViewById(R.id.signoutBt).setVisibility(View.GONE);
         } else {
             findViewById(R.id.subtext).setVisibility(View.GONE);
-            findViewById(R.id.twitterSignInBt).setVisibility(View.GONE);
             findViewById(R.id.googleSignInBt).setVisibility(View.GONE);
             findViewById(R.id.signoutBt).setVisibility(View.VISIBLE);
 
@@ -103,32 +96,38 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
     }
 
     private void googleSignInButtonClicked() {
+        showProgressBar();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    private void twitterSignInButtonClicked() {
-        //TODO
-    }
-
     private void signOutButtonClicked() {
+        showProgressBar();
         FirebaseUser user = mAuth.getCurrentUser();
 
         if (user != null) {
-            String providerId = user.getProviderId();
-            Log.d(TAG, "User signout, provider: "+providerId);
-
-            if (providerId.equals("google")) {
-                Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(@NonNull Status status) {
-                        updateUI(null);
-                    }
-                });
-            }
-
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(@NonNull Status status) {
+                    updateUI(null);
+                }
+            });
             mAuth.signOut();
         }
+    }
+
+    private void showProgressBar() {
+        findViewById(R.id.googleSignInBt).setVisibility(View.GONE);
+        findViewById(R.id.signoutBt).setVisibility(View.GONE);
+        ProgressBar progressBar = (ProgressBar)
+                findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar() {
+        ProgressBar progressBar = (ProgressBar)
+                findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
