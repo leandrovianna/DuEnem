@@ -26,4 +26,10 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("QUESTION", new Question());
         startActivity(intent);
     }
+    public void testHomeActivity(View v) {
+        Intent intent;
+        intent = new Intent(this, HomeActivity.class);
+
+        startActivity(intent);
+    }
 }
