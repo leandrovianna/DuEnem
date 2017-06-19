@@ -1,16 +1,20 @@
 package com.alpha2.duenem.signin;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.alpha2.duenem.BaseActivity;
 import com.alpha2.duenem.R;
+import com.alpha2.duenem.model.User;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -20,25 +24,35 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-public class SignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+import java.util.HashMap;
+import java.util.Map;
+
+public class SignInActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private static final int RC_SIGN_IN = 10001;
     private static final String TAG = SignInActivity.class.getSimpleName();
 
     private GoogleApiClient mGoogleApiClient;
-    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
+
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View contentView = inflater.inflate(R.layout.activity_sign_in, null, false);
+        mDrawer.addView(contentView, 0);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -70,6 +84,8 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 signOutButtonClicked();
             }
         });
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
@@ -157,6 +173,7 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            createUserDb(user);
                         } else {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(SignInActivity.this, getString(R.string.message_sign_in_error),
@@ -166,6 +183,12 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
 
                     }
                 });
+    }
+
+    private void createUserDb(FirebaseUser firebaseUser) {
+        User user = new User(firebaseUser);
+
+        mDatabase.child("user").child(firebaseUser.getUid()).setValue(user);
     }
 
     @Override

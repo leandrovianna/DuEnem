@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -32,13 +33,12 @@ import com.squareup.picasso.Target;
 public class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
-    private static final String TAG = HomeActivity.class.getSimpleName();
+    private static final String TAG = BaseActivity.class.getSimpleName();
     protected DrawerLayout mDrawer;
-    protected ActionBarDrawerToggle mToggle;
+    private ActionBarDrawerToggle mToggle;
 
     protected FirebaseAuth mAuth;
-    protected ProfilePhotoTarget mProfilePhotoHandler;
+    private ProfilePhotoTarget mProfilePhotoHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,19 +94,15 @@ public class BaseActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -117,7 +113,6 @@ public class BaseActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         switch (id) {
