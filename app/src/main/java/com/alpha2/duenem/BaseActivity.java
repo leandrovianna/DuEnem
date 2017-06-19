@@ -1,13 +1,18 @@
 package com.alpha2.duenem;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.Log;
@@ -34,8 +39,11 @@ public class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
+    private static final String SELECTED_ITEM_ID = "com.alpha2.duenem.selected_item_id";
+
     protected DrawerLayout mDrawer;
     private ActionBarDrawerToggle mToggle;
+    private NavigationView mNavigationView;
 
     protected FirebaseAuth mAuth;
     private ProfilePhotoTarget mProfilePhotoHandler;
@@ -63,8 +71,8 @@ public class BaseActivity extends AppCompatActivity
         mDrawer.addDrawerListener(mToggle);
         mToggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         mAuth = FirebaseAuth.getInstance();
     }
@@ -115,23 +123,31 @@ public class BaseActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id) {
-            case R.id.perfil:
-                Intent intent = new Intent(this, SignInActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.materialestudo:
-                break;
-            case R.id.treinar:
-                break;
+        int selectedId = getIntent().getIntExtra(SELECTED_ITEM_ID, 0);
+
+        Intent intent = null;
+
+        if (id == R.id.perfil && selectedId != R.id.perfil) {
+            intent = new Intent(this, SignInActivity.class);
+            intent.putExtra(SELECTED_ITEM_ID, R.id.perfil);
+        }
+        else  if (id == R.id.materialestudo && selectedId != R.id.materialestudo) {
+
+        }
+        else  if (id == R.id.treinar && selectedId != R.id.treinar) {
+
+        }
+
+        if (intent != null) {
+            startActivity(intent);
         }
 
         mDrawer.closeDrawer(GravityCompat.START);
-        return true;
+        return false;
     }
 
     private void updateDrawerHeaderUI(FirebaseUser user) {
-        View headerView = ((NavigationView) findViewById(R.id.nav_view)).getHeaderView(0);
+        View headerView = mNavigationView.getHeaderView(0);
         ImageView avatar = (ImageView) headerView.findViewById(R.id.avatar);
         mProfilePhotoHandler = new ProfilePhotoTarget(avatar);
         TextView username = (TextView) headerView.findViewById(R.id.username);
