@@ -36,12 +36,8 @@ public class LessonActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        //inflate your activity layout here!
-        View contentView = inflater.inflate(R.layout.content_lesson, null, false);
-        mDrawer.addView(contentView, 0);
-
+        View contentView = setContentLayout(R.layout.content_lesson);
 
         mViewPager = (ViewPager) contentView.findViewById(R.id.viewPagerLesson);
 

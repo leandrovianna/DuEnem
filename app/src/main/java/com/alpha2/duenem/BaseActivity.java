@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
@@ -26,6 +27,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,12 +43,18 @@ public class BaseActivity extends AppCompatActivity
     private static final String TAG = BaseActivity.class.getSimpleName();
     private static final String SELECTED_ITEM_ID = "com.alpha2.duenem.selected_item_id";
 
-    protected DrawerLayout mDrawer;
+    private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mToggle;
     private NavigationView mNavigationView;
 
     protected FirebaseAuth mAuth;
     private ProfilePhotoTarget mProfilePhotoHandler;
+
+    protected View setContentLayout(int contentLayoutResId) {
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        FrameLayout layout = (FrameLayout) findViewById(R.id.content_layout);
+        return inflater.inflate(contentLayoutResId, layout, true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +64,6 @@ public class BaseActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mToggle = new ActionBarDrawerToggle(
                 this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -73,6 +72,10 @@ public class BaseActivity extends AppCompatActivity
 
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
+
+        int selectedId = getIntent().getIntExtra(SELECTED_ITEM_ID, 0);
+        if (selectedId != 0)
+            mNavigationView.setCheckedItem(selectedId);
 
         mAuth = FirebaseAuth.getInstance();
     }
@@ -107,7 +110,7 @@ public class BaseActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         int id = item.getItemId();
 
@@ -120,7 +123,7 @@ public class BaseActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         int selectedId = getIntent().getIntExtra(SELECTED_ITEM_ID, 0);

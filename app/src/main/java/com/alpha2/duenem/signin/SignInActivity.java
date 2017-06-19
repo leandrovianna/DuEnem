@@ -48,13 +48,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View contentView = inflater.inflate(R.layout.activity_sign_in, null, false);
-        mDrawer.addView(contentView, 0);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setContentLayout(R.layout.content_sign_in);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -67,9 +61,6 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                 .enableAutoManage(this , this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         findViewById(R.id.googleSignInBt).setOnClickListener(new View.OnClickListener() {
             @Override
