@@ -12,7 +12,7 @@ import java.util.List;
  * Created by misael on 01/06/17.
  */
 
-public class Question  implements Serializable {
+public class Question extends Material {
     private String title;
     private Text text;
     private Text[] alternatives = new Text[6];
