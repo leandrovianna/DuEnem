@@ -74,8 +74,8 @@ public class BaseActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -90,8 +90,9 @@ public class BaseActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
+
         mAuth.removeAuthStateListener(mAuthStateListener);
     }
 

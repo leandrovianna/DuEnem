@@ -72,8 +72,8 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
