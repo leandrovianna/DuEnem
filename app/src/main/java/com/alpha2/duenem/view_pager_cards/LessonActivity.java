@@ -23,6 +23,7 @@ import com.alpha2.duenem.Topic;
 import java.util.List;
 
 public class LessonActivity extends BaseActivity {
+    public static final String TOPIC_EXTRA = "com.alpha2.duenem.topic_extra";
     private Button mButton;
     private ViewPager mViewPager;
 
@@ -42,7 +43,7 @@ public class LessonActivity extends BaseActivity {
         mViewPager = (ViewPager) contentView.findViewById(R.id.viewPagerLesson);
 
         mCardAdapter = new CardPagerAdapter();
-        Topic topic = (Topic) getIntent().getSerializableExtra("TOPIC");
+        Topic topic = (Topic) getIntent().getSerializableExtra(TOPIC_EXTRA);
         List<Lesson> lessons = topic.getLessons();
         for(int i = 0; i < lessons.size(); i++)
             mCardAdapter.addLesson(lessons.get(i));

@@ -17,19 +17,13 @@ public class Topic implements Serializable {
     private List<Lesson> lessons;
 
     public Topic() {
-
-    }
-
-    public Topic(String title, String description, List<Lesson> lessons){
-        this.title = title;
-        this.description = description;
-        this.lessons = lessons;
+        this.lessons = new ArrayList<>();
     }
 
     public Topic(String title, String description){
+        this();
         this.title = title;
         this.description = description;
-        lessons = new ArrayList<>();
     }
 
     public void addLesson(Lesson lesson){

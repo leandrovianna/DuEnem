@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         topic.addLesson(new Lesson("Relação entre juros e progressões",  "Tipos de taxas: taxas equivalentes, taxas nominais, taxas efetivas, taxa real."));
         //
 
-        intent.putExtra("TOPIC", topic);
+        intent.putExtra(LessonActivity.TOPIC_EXTRA, topic);
 
         startActivity(intent);
     }

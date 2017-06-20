@@ -1,15 +1,20 @@
 package com.alpha2.duenem;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.alpha2.duenem.view_pager_cards.LessonActivity;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +22,6 @@ import java.util.List;
 public class HomeActivity extends BaseActivity {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
-    private DatabaseReference mDatabase;
     private ArrayAdapter<Topic> mAdapter;
 
     @Override
@@ -31,15 +35,42 @@ public class HomeActivity extends BaseActivity {
 
         ListView listView = (ListView) findViewById(R.id.listViewTopics);
         listView.setAdapter(mAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Topic t = (Topic) parent.getItemAtPosition(position);
+                Intent intent = new Intent(HomeActivity.this, LessonActivity.class);
+                intent.putExtra(LessonActivity.TOPIC_EXTRA, t);
+                startActivity(intent);
+            }
+        });
 
-        mDatabase = FirebaseDatabase.getInstance().getReference()
+        DatabaseReference topicRef = FirebaseDatabase.getInstance().getReference()
                 .child("topic");
+        final DatabaseReference lessonRef = FirebaseDatabase.getInstance().getReference()
+                .child("lesson");
 
-        mDatabase.addChildEventListener(new ChildEventListener() {
+        topicRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Topic topic = dataSnapshot.getValue(Topic.class);
-                mAdapter.add(topic);
+                final Topic topic = dataSnapshot.getValue(Topic.class);
+                if (topic != null) {
+                    lessonRef.child(dataSnapshot.getKey())
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot lessonSnapshot : dataSnapshot.getChildren()) {
+                                        topic.addLesson(lessonSnapshot.getValue(Lesson.class));
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.e(TAG, databaseError.getMessage());
+                                }
+                            });
+                    mAdapter.add(topic);
+                }
             }
 
             @Override

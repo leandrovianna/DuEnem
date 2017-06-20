@@ -13,10 +13,13 @@ public class Lesson implements Serializable {
 
     private List<Material> materials;
 
+    public Lesson() {}
+
     public Lesson(String title, String description){
         this.title = title;
         this.description = description;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
