@@ -139,6 +139,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
+                Log.d(TAG, "onActivityResult GoogleSignInResult error "+result);
                 updateUI(null);
             }
         }
