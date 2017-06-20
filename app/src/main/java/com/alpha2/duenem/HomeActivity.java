@@ -8,8 +8,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.alpha2.duenem.model.Lesson;
+import com.alpha2.duenem.model.Topic;
 import com.alpha2.duenem.view_pager_cards.LessonActivity;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,7 +31,7 @@ public class HomeActivity extends BaseActivity {
         setContentLayout(R.layout.content_home);
 
         List<Topic> topics = new ArrayList<>();
-        mAdapter = new ArrayAdapter<Topic>(this,
+        mAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, topics);
 
         ListView listView = (ListView) findViewById(R.id.listViewTopics);
@@ -47,51 +48,36 @@ public class HomeActivity extends BaseActivity {
 
         DatabaseReference topicRef = FirebaseDatabase.getInstance().getReference()
                 .child("topic");
-        final DatabaseReference lessonRef = FirebaseDatabase.getInstance().getReference()
-                .child("lesson");
 
-        topicRef.addChildEventListener(new ChildEventListener() {
+        topicRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                final Topic topic = dataSnapshot.getValue(Topic.class);
-                if (topic != null) {
-                    lessonRef.child(dataSnapshot.getKey())
-                            .addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot lessonSnapshot : dataSnapshot.getChildren()) {
-                                        topic.addLesson(lessonSnapshot.getValue(Lesson.class));
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    Log.e(TAG, databaseError.getMessage());
-                                }
-                            });
-                    mAdapter.add(topic);
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                setListData(dataSnapshot.getChildren());
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d(TAG, databaseError.getMessage());
+                Log.e(TAG, databaseError.getMessage());
             }
         });
+    }
+
+    private void setListData(Iterable<DataSnapshot> children) {
+        mAdapter.clear();
+        for (DataSnapshot topicSnap : children) {
+            Topic topic = topicSnap.getValue(Topic.class);
+
+            if (topic != null) {
+                for (DataSnapshot lessonSnap : topicSnap.child("lessons").getChildren()) {
+                    topic.addLesson(lessonSnap.getValue(Lesson.class));
+                }
+                mAdapter.add(topic);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

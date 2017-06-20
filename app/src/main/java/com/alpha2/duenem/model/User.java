@@ -2,7 +2,6 @@ package com.alpha2.duenem.model;
 
 import android.support.annotation.NonNull;
 
-import com.alpha2.duenem.Question;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.Serializable;

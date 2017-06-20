@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.alpha2.duenem.Lesson;
+import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.R;
 
 import java.util.ArrayList;

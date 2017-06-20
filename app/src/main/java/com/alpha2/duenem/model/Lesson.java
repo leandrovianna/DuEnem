@@ -1,4 +1,4 @@
-package com.alpha2.duenem;
+package com.alpha2.duenem.model;
 
 import java.io.Serializable;
 import java.util.List;

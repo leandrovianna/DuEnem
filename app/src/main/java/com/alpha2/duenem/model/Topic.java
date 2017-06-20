@@ -1,4 +1,4 @@
-package com.alpha2.duenem;
+package com.alpha2.duenem.model;
 
 import com.google.firebase.database.Exclude;
 
@@ -44,6 +44,7 @@ public class Topic implements Serializable {
     public String getDescription(){
         return this.description;
     }
+
 
     @Exclude
     public List<Lesson> getLessons(){

@@ -153,7 +153,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithCredential:success");
+                            Log.i(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                             createUserDb(user);
@@ -176,7 +176,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        Log.e(TAG, "onConnectionFailed:" + connectionResult);
         Toast.makeText(this, getString(R.string.message_play_services_error), Toast.LENGTH_SHORT).show();
     }
 }

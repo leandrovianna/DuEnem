@@ -2,23 +2,16 @@ package com.alpha2.duenem.view_pager_cards;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 
 import com.alpha2.duenem.BaseActivity;
-import com.alpha2.duenem.Lesson;
+import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.R;
-import com.alpha2.duenem.Topic;
+import com.alpha2.duenem.model.Topic;
 
 import java.util.List;
 
@@ -47,6 +40,8 @@ public class LessonActivity extends BaseActivity {
         List<Lesson> lessons = topic.getLessons();
         for(int i = 0; i < lessons.size(); i++)
             mCardAdapter.addLesson(lessons.get(i));
+
+        setTitle(topic.getTitle());
 
 
         mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
