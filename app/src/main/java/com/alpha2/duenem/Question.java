@@ -13,7 +13,6 @@ import java.util.List;
  */
 
 public class Question extends Material {
-    private String title;
     private Text text;
     private Text[] alternatives = new Text[6];
     int number_of_alternatives;

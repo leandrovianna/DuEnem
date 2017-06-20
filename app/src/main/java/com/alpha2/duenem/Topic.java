@@ -46,6 +46,7 @@ public class Topic implements Serializable {
         return this.getDescription();
     }
 
+    
     public List<Lesson> getLessons(){
         return this.lessons;
     }

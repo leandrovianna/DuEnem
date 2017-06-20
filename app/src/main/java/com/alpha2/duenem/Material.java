@@ -7,4 +7,6 @@ import java.io.Serializable;
  */
 
 public class Material implements Serializable {
+    protected String title;
+
 }
