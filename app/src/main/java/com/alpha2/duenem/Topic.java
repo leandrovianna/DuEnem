@@ -1,5 +1,7 @@
 package com.alpha2.duenem;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,9 @@ public class Topic implements Serializable {
     private long id;
     private List<Lesson> lessons;
 
+    public Topic() {
 
+    }
 
     public Topic(String title, String description, List<Lesson> lessons){
         this.title = title;
@@ -31,6 +35,7 @@ public class Topic implements Serializable {
     public void addLesson(Lesson lesson){
         lessons.add(lesson);
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -43,11 +48,16 @@ public class Topic implements Serializable {
     }
 
     public String getDescription(){
-        return this.getDescription();
+        return this.description;
     }
 
-    
+    @Exclude
     public List<Lesson> getLessons(){
         return this.lessons;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s: %s", title, description);
     }
 }
