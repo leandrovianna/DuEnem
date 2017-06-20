@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.model.Topic;
+import com.alpha2.duenem.signin.SignInActivity;
 import com.alpha2.duenem.view_pager_cards.LessonActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +25,9 @@ public class HomeActivity extends BaseActivity {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
     private ArrayAdapter<Topic> mAdapter;
+
+    private ValueEventListener mTopicRefListener;
+    private DatabaseReference mTopicRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +50,15 @@ public class HomeActivity extends BaseActivity {
             }
         });
 
-        DatabaseReference topicRef = FirebaseDatabase.getInstance().getReference()
+        mTopicRef = FirebaseDatabase.getInstance().getReference()
                 .child("topic");
+    }
 
-        topicRef.addValueEventListener(new ValueEventListener() {
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mTopicRefListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 setListData(dataSnapshot.getChildren());
@@ -58,8 +67,23 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(TAG, databaseError.getMessage());
+                openSignInActivity();
             }
-        });
+        };
+
+        mTopicRef.addValueEventListener(mTopicRefListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mTopicRef.removeEventListener(mTopicRefListener);
+    }
+
+    private void openSignInActivity() {
+        Intent intent = new Intent(this, SignInActivity.class);
+        intent.putExtra(SELECTED_ITEM_ID_EXTRA, R.id.perfil);
+        startActivity(intent);
     }
 
     private void setListData(Iterable<DataSnapshot> children) {

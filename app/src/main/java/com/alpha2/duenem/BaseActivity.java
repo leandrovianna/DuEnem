@@ -33,7 +33,7 @@ public class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
-    private static final String SELECTED_ITEM_ID = "com.alpha2.duenem.selected_item_id";
+    protected static final String SELECTED_ITEM_ID_EXTRA = "com.alpha2.duenem.selected_item_id";
 
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mToggle;
@@ -65,11 +65,17 @@ public class BaseActivity extends AppCompatActivity
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
 
-        int selectedId = getIntent().getIntExtra(SELECTED_ITEM_ID, 0);
+        int selectedId = getIntent().getIntExtra(SELECTED_ITEM_ID_EXTRA, 0);
         if (selectedId != 0)
             mNavigationView.setCheckedItem(selectedId);
 
         mAuth = FirebaseAuth.getInstance();
+        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                updateDrawerHeaderUI(firebaseAuth.getCurrentUser());
+            }
+        });
     }
 
     @Override
@@ -118,13 +124,13 @@ public class BaseActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        int selectedId = getIntent().getIntExtra(SELECTED_ITEM_ID, 0);
+        int selectedId = getIntent().getIntExtra(SELECTED_ITEM_ID_EXTRA, 0);
 
         Intent intent = null;
 
         if (id == R.id.perfil && selectedId != R.id.perfil) {
             intent = new Intent(this, SignInActivity.class);
-            intent.putExtra(SELECTED_ITEM_ID, R.id.perfil);
+            intent.putExtra(SELECTED_ITEM_ID_EXTRA, R.id.perfil);
         }
         else  if (id == R.id.materialestudo && selectedId != R.id.materialestudo) {
 
