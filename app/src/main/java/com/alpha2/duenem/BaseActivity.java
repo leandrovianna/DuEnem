@@ -41,6 +41,7 @@ public class BaseActivity extends AppCompatActivity
 
     protected FirebaseAuth mAuth;
     private ProfilePhotoTarget mProfilePhotoHandler;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     protected View setContentLayout(int contentLayoutResId) {
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -70,19 +71,28 @@ public class BaseActivity extends AppCompatActivity
             mNavigationView.setCheckedItem(selectedId);
 
         mAuth = FirebaseAuth.getInstance();
-        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                updateDrawerHeaderUI(firebaseAuth.getCurrentUser());
-            }
-        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                updateDrawerHeaderUI(firebaseAuth.getCurrentUser());
+            }
+        };
+
+        mAuth.addAuthStateListener(mAuthStateListener);
+
         updateDrawerHeaderUI(mAuth.getCurrentUser());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAuth.removeAuthStateListener(mAuthStateListener);
     }
 
     @Override
@@ -133,7 +143,8 @@ public class BaseActivity extends AppCompatActivity
             intent.putExtra(SELECTED_ITEM_ID_EXTRA, R.id.perfil);
         }
         else  if (id == R.id.materialestudo && selectedId != R.id.materialestudo) {
-
+            intent = new Intent(this, HomeActivity.class);
+            intent.putExtra(SELECTED_ITEM_ID_EXTRA, R.id.materialestudo);
         }
         else  if (id == R.id.treinar && selectedId != R.id.treinar) {
 

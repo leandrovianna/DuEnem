@@ -1,5 +1,6 @@
 package com.alpha2.duenem.model;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -12,6 +13,8 @@ public class User implements Serializable {
     private String name;
     private String email;
     private String uid;
+    private String phoneNumber;
+    private Uri photoUrl;
     private List<Question> questions;
 
     // Required!
@@ -22,6 +25,8 @@ public class User implements Serializable {
         this.name = user.getDisplayName();
         this.email = user.getEmail();
         this.uid = user.getUid();
+        this.photoUrl = user.getPhotoUrl();
+        this.phoneNumber = user.getPhoneNumber();
         this.questions = new ArrayList<>();
     }
 
@@ -47,6 +52,22 @@ public class User implements Serializable {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl.toString();
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setPhotoUrl(Uri photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public List<Question> getQuestions() {

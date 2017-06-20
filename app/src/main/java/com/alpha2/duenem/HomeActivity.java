@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.model.Topic;
@@ -67,7 +68,10 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e(TAG, databaseError.getMessage());
-                openSignInActivity();
+                mAdapter.clear();
+                Toast.makeText(HomeActivity.this,
+                        "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
+                        .show();
             }
         };
 
@@ -78,12 +82,6 @@ public class HomeActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
         mTopicRef.removeEventListener(mTopicRefListener);
-    }
-
-    private void openSignInActivity() {
-        Intent intent = new Intent(this, SignInActivity.class);
-        intent.putExtra(SELECTED_ITEM_ID_EXTRA, R.id.perfil);
-        startActivity(intent);
     }
 
     private void setListData(Iterable<DataSnapshot> children) {
