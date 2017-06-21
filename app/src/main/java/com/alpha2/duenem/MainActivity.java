@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.alpha2.duenem.signin.SignInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,17 +19,9 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser user = auth.getCurrentUser();
 
-        Intent intent;
-
-        if (user != null) {
-            intent = new Intent(this, HomeActivity.class);
-            intent.putExtra(BaseActivity.SELECTED_ITEM_ID_EXTRA, R.id.materialestudo);
-        } else {
-            intent = new Intent(this, SignInActivity.class);
-            intent.putExtra(BaseActivity.SELECTED_ITEM_ID_EXTRA, R.id.perfil);
-        }
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent intent = (user != null)
+                ? IntentAbstractFactory.createHomeActivityIntent(this)
+                : IntentAbstractFactory.createSignInActivityIntent(this);
         startActivity(intent);
         finish();
     }

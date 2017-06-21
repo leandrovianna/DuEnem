@@ -88,9 +88,6 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
             findViewById(R.id.subtext).setVisibility(View.GONE);
             findViewById(R.id.googleSignInBt).setVisibility(View.GONE);
             findViewById(R.id.signoutBt).setVisibility(View.VISIBLE);
-
-            Toast.makeText(this, "User: "+currentUser.getDisplayName(), Toast.LENGTH_LONG)
-                    .show();
         }
     }
 

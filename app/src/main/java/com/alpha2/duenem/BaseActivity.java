@@ -140,12 +140,10 @@ public class BaseActivity extends AppCompatActivity
         Intent intent = null;
 
         if (id == R.id.perfil && selectedId != R.id.perfil) {
-            intent = new Intent(this, SignInActivity.class);
-            intent.putExtra(SELECTED_ITEM_ID_EXTRA, R.id.perfil);
+            intent = IntentAbstractFactory.createSignInActivityIntent(this);
         }
         else  if (id == R.id.materialestudo && selectedId != R.id.materialestudo) {
-            intent = new Intent(this, HomeActivity.class);
-            intent.putExtra(SELECTED_ITEM_ID_EXTRA, R.id.materialestudo);
+            intent = IntentAbstractFactory.createHomeActivityIntent(this);
         }
         else  if (id == R.id.treinar && selectedId != R.id.treinar) {
 
