@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -66,6 +67,11 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
+    public void setPhotoUrl(String photoUrl) {
+        this.setPhotoUrl(Uri.parse(photoUrl));
+    }
+
+    @Exclude
     public void setPhotoUrl(Uri photoUrl) {
         this.photoUrl = photoUrl;
     }

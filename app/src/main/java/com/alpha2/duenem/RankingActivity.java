@@ -1,23 +1,26 @@
 package com.alpha2.duenem;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.ListAdapter;
+import android.util.Log;
 import android.widget.ListView;
 
 import com.alpha2.duenem.model.RankingItem;
 import com.alpha2.duenem.model.User;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RankingActivity extends BaseActivity {
 
+    private static final String TAG = RankingActivity.class.getSimpleName();
     private RankingListAdapter mAdapter;
+    private List<RankingItem> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,14 +29,42 @@ public class RankingActivity extends BaseActivity {
         setContentLayout(R.layout.content_ranking);
 
         ListView listView = (ListView) findViewById(R.id.rankingList);
-
-        List<RankingItem> list = new ArrayList<>();
-
-        list.add(new RankingItem(new User(mAuth.getCurrentUser()), 30492));
-        list.add(new RankingItem(new User(mAuth.getCurrentUser()), 23092));
-
-        mAdapter = new RankingListAdapter(list);
+        mList = new ArrayList<>();
+        mAdapter = new RankingListAdapter(this, mList);
         listView.setAdapter(mAdapter);
+
+        DatabaseReference rankingRef = FirebaseDatabase.getInstance().getReference("ranking");
+        rankingRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot rankingItemSnap : dataSnapshot.getChildren())
+                    addItemToList(rankingItemSnap);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, databaseError.getMessage());
+            }
+        });
+    }
+
+    private void addItemToList(DataSnapshot dataSnapshot) {
+        final Double points = dataSnapshot.getValue(Double.class);
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("user").child(dataSnapshot.getKey());
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                RankingItem rankingItem = new RankingItem(user, points.intValue());
+                mList.add(rankingItem);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, databaseError.getMessage());
+            }
+        });
     }
 
 }
