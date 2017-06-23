@@ -148,6 +148,9 @@ public class BaseActivity extends AppCompatActivity
         else  if (id == R.id.treinar && selectedId != R.id.treinar) {
 
         }
+        else  if (id == R.id.ranking && selectedId != R.id.ranking) {
+            intent = IntentAbstractFactory.createRankingActivityIntent(this);
+        }
 
         if (intent != null) {
             startActivity(intent);

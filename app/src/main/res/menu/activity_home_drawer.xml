@@ -9,19 +9,24 @@
             <!--android:title="Import" />-->
         <item
             android:id="@+id/perfil"
-            android:title="Sua conta"
+            android:title="@string/drawer_option_account"
             android:icon="@drawable/ic_account_box_black_24dp"
             />
 
         <item
             android:id="@+id/materialestudo"
             android:icon="@drawable/ic_description_black_24dp"
-            android:title="Material de Estudo" />
+            android:title="@string/drawer_option_study" />
 
         <item
             android:id="@+id/treinar"
             android:icon="@drawable/ic_timer_black_24dp"
-            android:title="Treinar" />
+            android:title="@string/drawer_option_training" />
+
+        <item
+            android:id="@+id/ranking"
+            android:icon="@drawable/ic_trophy_24dp"
+            android:title="@string/drawer_option_ranking" />
 
     </group>
 
