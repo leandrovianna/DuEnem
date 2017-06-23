@@ -7,33 +7,46 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.TextView;
 
+import com.alpha2.duenem.model.Lesson;
+import com.alpha2.duenem.model.Material;
 import com.alpha2.duenem.model.Question;
 
-public class QuestionActivity extends AppCompatActivity {
+import java.util.List;
+
+public class QuestionActivity extends BaseActivity {
 
     public static final String QUESTION_EXTRA = "com.alpha2.duenem.question_extra";
+
+    int current_lesson;
+    List<Material> questions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setContentView(R.layout.activity_question);
+        setContentLayout(R.layout.content_home);
+        Lesson lesson = (Lesson) getIntent().getSerializableExtra("LESSON");
 
-        Question question = (Question)getIntent().getSerializableExtra("QUESTION");
-        question.addText("Questao 1\n jkdfjkkdjfkkjfdz\njkjfdk\n");
-        LinearLayout layout = (LinearLayout) findViewById(R.id.content_question);
-        question.buildContent(this, layout);
+        questions = lesson.getMaterial();
+        current_lesson = 0;
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(com.alpha2.duenem.R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Do something here", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        setContentQuestion((Question) questions.get(0));
+    }
+
+    public void setContentQuestion(Question question){
+        TextView textTitle = (TextView) findViewById(R.id.textTitleQuestion);
+        TextView textContent = (TextView) findViewById(R.id.textContentQuestion);
+
+        textTitle.setText(question.getTitle());
+        textContent.setText(question.getText());
+
+        ((RadioButton)findViewById(R.id.radioBt1) ).setText(question.getTextAlternative(0));
+        ((RadioButton)findViewById(R.id.radioBt2) ).setText(question.getTextAlternative(1));
+        ((RadioButton)findViewById(R.id.radioBt3) ).setText(question.getTextAlternative(2));
+        ((RadioButton)findViewById(R.id.radioBt4) ).setText(question.getTextAlternative(3));
+        ((RadioButton)findViewById(R.id.radioBt5) ).setText(question.getTextAlternative(4));
 
     }
 
