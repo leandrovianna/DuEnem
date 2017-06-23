@@ -14,6 +14,8 @@ import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.model.Material;
 import com.alpha2.duenem.model.Question;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class QuestionActivity extends BaseActivity {
@@ -22,23 +24,33 @@ public class QuestionActivity extends BaseActivity {
 
     int current_lesson;
     List<Material> questions;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentLayout(R.layout.content_home);
+        setContentLayout(R.layout.content_question);
         Lesson lesson = (Lesson) getIntent().getSerializableExtra("LESSON");
 
         questions = lesson.getMaterial();
         current_lesson = 0;
 
-        setContentQuestion((Question) questions.get(0));
+
     }
 
-    public void setContentQuestion(Question question){
+    public void nextQuestion(){
+        current_lesson++;
+        if(current_lesson >= questions.size()){
+            // break;
+        }
+        else{
+            setContentQuestion((Question)questions.get(current_lesson), current_lesson+1);
+        }
+    }
+    public void setContentQuestion(Question question, int i){
+        TextView textTop = (TextView) findViewById(R.id.textTopQuestion);
         TextView textTitle = (TextView) findViewById(R.id.textTitleQuestion);
         TextView textContent = (TextView) findViewById(R.id.textContentQuestion);
 
+        textTop.setText("Questão " + i);
         textTitle.setText(question.getTitle());
         textContent.setText(question.getText());
 

@@ -1,6 +1,8 @@
 package com.alpha2.duenem.view_pager_cards;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.alpha2.duenem.QuestionActivity;
 import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.R;
 
@@ -20,10 +23,11 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
     private List<CardView> mViews;
     private List<Lesson> mData;
     private float mBaseElevation;
-
-    public CardPagerAdapter() {
+    Context context;
+    public CardPagerAdapter(Context context) {
         mData = new ArrayList<>();
         mViews = new ArrayList<>();
+        this.context = context;
     }
 
     public void addLesson(Lesson item) {
@@ -74,7 +78,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
         mViews.set(position, null);
     }
 
-    private void bind(Lesson item, View view) {
+    private void bind(final Lesson item, View view) {
         TextView titleTextView = (TextView) view.findViewById(R.id.titleTextViewAdapter);
         TextView contentTextView = (TextView) view.findViewById(R.id.contentTextViewAdapter);
         Button bt = (Button) view.findViewById(R.id.buttonAdapter);
@@ -85,7 +89,9 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // enter the material
+                Intent intent = new Intent(context, QuestionActivity.class);
+                intent.putExtra("LESSON", item);
+                context.startActivity(intent);
             }
         });
     }
