@@ -35,7 +35,7 @@ public class LessonActivity extends BaseActivity {
 
         mViewPager = (ViewPager) contentView.findViewById(R.id.viewPagerLesson);
 
-        mCardAdapter = new CardPagerAdapter();
+        mCardAdapter = new CardPagerAdapter(this);
         Topic topic = (Topic) getIntent().getSerializableExtra(TOPIC_EXTRA);
         List<Lesson> lessons = topic.getLessons();
         for(int i = 0; i < lessons.size(); i++)
