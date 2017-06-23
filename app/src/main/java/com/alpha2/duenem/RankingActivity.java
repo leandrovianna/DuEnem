@@ -11,6 +11,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ public class RankingActivity extends BaseActivity {
 
     private static final String TAG = RankingActivity.class.getSimpleName();
     private RankingListAdapter mAdapter;
-    private List<RankingItem> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +29,15 @@ public class RankingActivity extends BaseActivity {
         setContentLayout(R.layout.content_ranking);
 
         ListView listView = (ListView) findViewById(R.id.rankingList);
-        mList = new ArrayList<>();
-        mAdapter = new RankingListAdapter(this, mList);
+        mAdapter = new RankingListAdapter(this);
         listView.setAdapter(mAdapter);
 
         DatabaseReference rankingRef = FirebaseDatabase.getInstance().getReference("ranking");
-        rankingRef.addValueEventListener(new ValueEventListener() {
+        Query rankingQuery = rankingRef.orderByValue().limitToFirst(30);
+        rankingQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mAdapter.clear();
                 for (DataSnapshot rankingItemSnap : dataSnapshot.getChildren())
                     addItemToList(rankingItemSnap);
             }
@@ -56,8 +57,10 @@ public class RankingActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                RankingItem rankingItem = new RankingItem(user, points.intValue());
-                mList.add(rankingItem);
+                if (user != null) {
+                    RankingItem rankingItem = new RankingItem(user, points.intValue());
+                    mAdapter.addFront(rankingItem);
+                }
             }
 
             @Override

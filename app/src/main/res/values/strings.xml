@@ -24,6 +24,7 @@
     <string name="drawer_option_study">Material de Estudo</string>
     <string name="drawer_option_training">Treinar</string>
     <string name="drawer_option_ranking">Ranking</string>
-    <string name="title_activity_ranking">RankingActivity</string>
+
+    <string name="title_activity_ranking">Ranking</string>
 
 </resources>

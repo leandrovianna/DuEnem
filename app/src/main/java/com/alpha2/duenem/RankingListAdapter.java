@@ -5,12 +5,14 @@ import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
@@ -24,10 +26,43 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-class RankingListAdapter extends ArrayAdapter<RankingItem> {
+class RankingListAdapter extends BaseAdapter {
 
-    public RankingListAdapter(Context context, List<RankingItem> list) {
-        super(context, R.layout.ranking_list_item, list);
+    private List<RankingItem> rankingItems;
+
+    public RankingListAdapter(Context context) {
+        this.rankingItems = new ArrayList<>();
+    }
+
+    public void add(RankingItem rankingItem) {
+        this.rankingItems.add(rankingItem);
+        this.notifyDataSetChanged();
+    }
+
+    public void addFront(RankingItem rankingItem) {
+        this.rankingItems.add(0, rankingItem);
+        this.notifyDataSetChanged();
+    }
+
+    public void clear() {
+        this.rankingItems.clear();
+        this.notifyDataSetChanged();
+    }
+
+    @Override
+    public int getCount() {
+        return this.rankingItems.size();
+    }
+
+    @Nullable
+    @Override
+    public RankingItem getItem(int position) {
+        return this.rankingItems.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @NonNull
@@ -44,6 +79,7 @@ class RankingListAdapter extends ArrayAdapter<RankingItem> {
         final ImageView photoView = (ImageView) convertView.findViewById(R.id.photo);
 
         RankingItem item = getItem(position);
+        assert item != null;
         nameText.setText(item.getUser().getName());
         pointsText.setText(String.valueOf(item.getPoints()));
 
