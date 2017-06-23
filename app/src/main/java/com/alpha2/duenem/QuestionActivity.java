@@ -55,12 +55,10 @@ public class QuestionActivity extends BaseActivity {
         }
     }
     public void setContentQuestion(Question question, int i){
-        TextView textTop = (TextView) findViewById(R.id.textTopQuestion);
         TextView textTitle = (TextView) findViewById(R.id.textTitleQuestion);
         TextView textContent = (TextView) findViewById(R.id.textContentQuestion);
 
-        textTop.setText("Questão " + i);
-        textTitle.setText(question.getTitle());
+        textTitle.setText("Questão " + i);
         textContent.setText(question.getText());
 
         ((RadioButton)findViewById(R.id.radioBt1) ).setText(question.getTextAlternative(0));
