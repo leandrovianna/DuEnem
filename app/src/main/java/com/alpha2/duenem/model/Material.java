@@ -15,13 +15,18 @@ import java.io.Serializable;
 public class Material implements Serializable {
     private String title;
     private String text;
+    private String[] text_alternatives;
 
     public Material() {
+        this.title = "Title";
+        this.text = "Text";
+        text_alternatives = new String[5];
     }
 
     public Material(String title, String text) {
         this.title = title;
         this.text = text;
+        text_alternatives = new String[5];
     }
 
     public String getTitle() {
@@ -44,14 +49,8 @@ public class Material implements Serializable {
         this.text += text;
     }
 
-    public void buildContent(Activity activity, ViewGroup parent){
-        TextView titleTextView = (TextView) activity.getLayoutInflater().inflate(R.layout.simple_text_content, parent, false);
-        titleTextView.setText(this.getTitle());
-        titleTextView.setTextSize(titleTextView.getTextSize() * 2); // example, we must change
-        parent.addView(titleTextView);
-
-        TextView textTextView = (TextView) activity.getLayoutInflater().inflate(R.layout.simple_text_content, parent, false);
-        textTextView.setText(this.getText());
-        parent.addView(textTextView);
+    public String getTextAlternative(int i){
+        return text_alternatives[i];
     }
+
 }

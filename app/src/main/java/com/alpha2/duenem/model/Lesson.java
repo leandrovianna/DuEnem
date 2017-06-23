@@ -34,4 +34,10 @@ public class Lesson implements Serializable {
     public String getDescription(){
         return this.description;
     }
+
+    public List<Material> getMaterial() {
+        return this.materials;
+    }
+
+
 }
