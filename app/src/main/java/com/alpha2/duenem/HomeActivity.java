@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alpha2.duenem.model.Lesson;
+import com.alpha2.duenem.model.Material;
 import com.alpha2.duenem.model.Topic;
 import com.alpha2.duenem.signin.SignInActivity;
 import com.alpha2.duenem.view_pager_cards.LessonActivity;
@@ -73,6 +74,7 @@ public class HomeActivity extends BaseActivity {
                         "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
                         .show();
             }
+
         };
 
         mTopicRef.addValueEventListener(mTopicRefListener);
@@ -91,7 +93,10 @@ public class HomeActivity extends BaseActivity {
 
             if (topic != null) {
                 for (DataSnapshot lessonSnap : topicSnap.child("lessons").getChildren()) {
-                    topic.addLesson(lessonSnap.getValue(Lesson.class));
+                    Lesson lesson = lessonSnap.getValue(Lesson.class);
+
+
+                    topic.addLesson(lesson);
                 }
                 mAdapter.add(topic);
             }

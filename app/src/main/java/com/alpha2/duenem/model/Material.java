@@ -15,18 +15,15 @@ import java.io.Serializable;
 public class Material implements Serializable {
     private String title;
     private String text;
-    private String[] text_alternatives;
 
     public Material() {
         this.title = "Title";
         this.text = "Text";
-        text_alternatives = new String[5];
     }
 
     public Material(String title, String text) {
         this.title = title;
         this.text = text;
-        text_alternatives = new String[5];
     }
 
     public String getTitle() {
@@ -49,8 +46,6 @@ public class Material implements Serializable {
         this.text += text;
     }
 
-    public String getTextAlternative(int i){
-        return text_alternatives[i];
-    }
+
 
 }

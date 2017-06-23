@@ -1,6 +1,9 @@
 package com.alpha2.duenem.model;
 
+import com.google.firebase.database.DataSnapshot;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +16,11 @@ public class Lesson implements Serializable {
 
     private List<Material> materials;
 
-    public Lesson() {}
+    public Lesson() {
+        materials = new ArrayList<>();
+        title = "";
+        description = "";
+    }
 
     public Lesson(String title, String description){
         this.title = title;
@@ -40,4 +47,8 @@ public class Lesson implements Serializable {
     }
 
 
+    public void addMaterial(Material material) {
+        if(materials == null) materials = new ArrayList<>();
+        materials.add(material);
+    }
 }
