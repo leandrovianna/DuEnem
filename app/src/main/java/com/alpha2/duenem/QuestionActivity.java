@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -22,8 +23,9 @@ public class QuestionActivity extends BaseActivity {
 
     public static final String QUESTION_EXTRA = "com.alpha2.duenem.question_extra";
 
-    int current_lesson;
-    List<Material> questions;
+    private int current_lesson;
+    private List<Material> questions;
+    private int cont_correct = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,13 +35,20 @@ public class QuestionActivity extends BaseActivity {
         questions = lesson.getMaterial();
         current_lesson = 0;
 
+        Button bt = (Button) findViewById(R.id.buttonQuestion);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
     }
 
     public void nextQuestion(){
         current_lesson++;
         if(current_lesson >= questions.size()){
-            // break;
+            endLesson();
         }
         else{
             setContentQuestion((Question)questions.get(current_lesson), current_lesson+1);
@@ -62,4 +71,12 @@ public class QuestionActivity extends BaseActivity {
 
     }
 
+
+    private void ShowCorrect(){
+
+    }
+
+    private void endLesson(){
+
+    }
 }

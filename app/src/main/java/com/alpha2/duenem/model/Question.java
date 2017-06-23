@@ -1,15 +1,9 @@
 package com.alpha2.duenem.model;
 
-import android.app.Activity;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-
-import com.alpha2.duenem.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by misael on 01/06/17.
@@ -17,40 +11,46 @@ import java.util.List;
 
 public class Question extends Material {
     private static final int ALTERNATIVES_MAX = 6;
-    private List<String> alternatives;
+    private List<String> alternativesList;
+    private Map<String, Boolean> alternatives;
     private int number_of_alternatives;
+    private int correct_alternative;
 
     public Question(){
         super();
-        alternatives = new ArrayList<>();
         number_of_alternatives = 0;
     }
 
-    public Question(String title, String text, List<String> alternatives){
+    public Question(String title, String text, List<String> alternativesList){
         super(title, text);
-        alternatives = new ArrayList<>();
-        number_of_alternatives = alternatives.size();
+        alternativesList = new ArrayList<>();
+        number_of_alternatives = alternativesList.size();
         if(number_of_alternatives > ALTERNATIVES_MAX) number_of_alternatives = 6;
 
-        for(int i = 0; i < ALTERNATIVES_MAX && i < alternatives.size(); i++)
-            this.alternatives.add(alternatives.get(i));
 
-    }
-
-    @Override
-    public void buildContent(Activity activity, ViewGroup parent){
-        super.buildContent(activity, parent);
-
-        LayoutInflater inflater = activity.getLayoutInflater();
-        for (String alt : alternatives) {
-            TextView textView = (TextView) inflater.inflate(R.layout.simple_text_content, parent, false);
-            textView.setText(this.getTitle());
-            parent.addView(textView);
-        }
     }
 
     public void addAlternative(String alternative_content){
-        if(number_of_alternatives < ALTERNATIVES_MAX)
-            alternatives.add(alternative_content);
+        this.alternativesList.add(alternative_content);
+    }
+
+    public Map<String, Boolean> getAlternatives() {
+        return alternatives;
+    }
+
+    public void setAlternatives(Map<String, Boolean> alternatives) {
+        this.alternatives = alternatives;
+    }
+
+    public String getTextAlternative(int i){
+        return alternativesList.get(i);
+    }
+
+    public int getCorrect_alternative() {
+        return correct_alternative;
+    }
+
+    public void setCorrect_alternative(int correct_alternative) {
+        this.correct_alternative = correct_alternative;
     }
 }
