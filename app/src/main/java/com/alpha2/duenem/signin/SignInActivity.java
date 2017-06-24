@@ -79,7 +79,6 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     }
 
     private void updateUI(FirebaseUser currentUser) {
-        hideProgressBar();
         if (currentUser == null) {
             findViewById(R.id.subtext).setVisibility(View.VISIBLE);
             findViewById(R.id.googleSignInBt).setVisibility(View.VISIBLE);
@@ -89,6 +88,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
             findViewById(R.id.googleSignInBt).setVisibility(View.GONE);
             findViewById(R.id.signoutBt).setVisibility(View.VISIBLE);
         }
+        hideProgressBar();
     }
 
     private void googleSignInButtonClicked() {

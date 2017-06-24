@@ -20,4 +20,11 @@ public abstract class IntentAbstractFactory {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }
+
+    public static Intent createRankingActivityIntent(Activity source) {
+        Intent intent = new Intent(source, RankingActivity.class);
+        intent.putExtra(BaseActivity.SELECTED_ITEM_ID_EXTRA, R.id.ranking);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
+    }
 }
