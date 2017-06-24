@@ -94,7 +94,8 @@ public class BaseActivity extends AppCompatActivity
                         final Intent intent = IntentAbstractFactory
                                 .createHomeActivityIntent(BaseActivity.this, d);
 
-                       disciplinesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, d.getName())
+                        disciplinesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, d.getName())
+                                .setIcon(R.drawable.ic_description_black_24dp)
                                 .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                                     @Override
                                     public boolean onMenuItemClick(MenuItem item) {
