@@ -1,5 +1,6 @@
 package com.alpha2.duenem;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -150,6 +151,11 @@ public class QuestionActivity extends BaseActivity {
         }
     }
     private void endLesson(){
+        int grade = (cont_correct * 10) / questions.size();
+        Intent intent = new Intent(this, LessonEndedActivity.class);
+        intent.putExtra("GRADE", grade);
 
+        startActivity(intent);
+        finish();
     }
 }

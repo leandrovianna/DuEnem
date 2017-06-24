@@ -79,4 +79,8 @@ public class User implements Serializable {
     public List<Question> getQuestions() {
         return questions;
     }
+
+    public void updateLastTimeLesson(int idLesson, int grade){
+
+    }
 }
