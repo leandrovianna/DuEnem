@@ -21,12 +21,12 @@ public class Question extends Material {
         number_of_alternatives = 0;
     }
 
-    public Question(String title, String text, List<String> alternativesList){
+    public Question(String title, String text, List<String> alternativesList, int correct_alternative){
         super(title, text);
-        alternativesList = new ArrayList<>();
+        this.alternativesList = alternativesList;
         number_of_alternatives = alternativesList.size();
         if(number_of_alternatives > ALTERNATIVES_MAX) number_of_alternatives = 6;
-
+        this.correct_alternative = correct_alternative;
 
     }
 

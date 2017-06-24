@@ -25,7 +25,10 @@ public class Lesson implements Serializable {
     public Lesson(String title, String description){
         this.title = title;
         this.description = description;
+        materials = new ArrayList<>();
     }
+
+
 
     public void setTitle(String title) {
         this.title = title;
@@ -48,7 +51,6 @@ public class Lesson implements Serializable {
 
 
     public void addMaterial(Material material) {
-        if(materials == null) materials = new ArrayList<>();
         materials.add(material);
     }
 }
