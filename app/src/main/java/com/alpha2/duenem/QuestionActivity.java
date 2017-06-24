@@ -20,17 +20,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class QuestionActivity extends BaseActivity {
 
     public static final String QUESTION_EXTRA = "com.alpha2.duenem.question_extra";
     private static final String TAG = QuestionActivity.class.getSimpleName();
 
+    private int correct_alternative;
     private int current_lesson;
     private List<Material> questions;
     private int cont_correct = 0;
-    int buttonState = 0;
+    private int buttonState = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +88,7 @@ public class QuestionActivity extends BaseActivity {
                         i_selected = 3;
                     else if (selectedId == findViewById(R.id.radioBt5).getId())
                         i_selected = 4;
-                    int correct_alternative = ((Question) questions.get(current_lesson)).getCorrect_alternative();
+
                     if (i_selected == correct_alternative) {
                         cont_correct++;
                         ShowCorrect();
@@ -124,12 +130,21 @@ public class QuestionActivity extends BaseActivity {
         textContent.setText(question.getText());
 
         int[] ListId = new int[]{R.id.radioBt1, R.id.radioBt2, R.id.radioBt3, R.id.radioBt4, R.id.radioBt5};
+
+        Random generator = new Random();
+        Integer[] order = new Integer[]{0, 1, 2, 3, 4};
+        List<Integer> list = Arrays.asList(order);
+        Collections.shuffle(list);
+
         for(int i = 0; i < 5; i++){
-            RadioButton radioButton = (RadioButton)findViewById(R.id.radioBt1);
-            radioButton.setText(question.getTextAlternative(0));
+            RadioButton radioButton = (RadioButton)findViewById(ListId[i]);
+            radioButton.setText(question.getTextAlternative(list.get(i)));
             radioButton.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorQuestionDefault, null));
             radioButton.setChecked(false);
+            if(list.get(i) == 0)
+                correct_alternative = i;
         }
+
 
     }
 
