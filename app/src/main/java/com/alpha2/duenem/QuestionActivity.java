@@ -37,6 +37,7 @@ public class QuestionActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentLayout(R.layout.content_question);
         final Lesson lesson = (Lesson) getIntent().getSerializableExtra("LESSON");
+        this.setTitle(lesson.getTitle());
 
         Query materialsQuery = DBHelper.getMaterialsFromLesson(lesson.getUid());
         materialsQuery.addValueEventListener(new ValueEventListener() {
@@ -60,6 +61,8 @@ public class QuestionActivity extends BaseActivity {
                 Log.w(TAG, databaseError.getMessage());
             }
         });
+
+
 
         Button bt = (Button) findViewById(R.id.buttonQuestion);
         bt.setOnClickListener(new View.OnClickListener() {
