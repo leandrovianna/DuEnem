@@ -80,7 +80,7 @@ public class User implements Serializable {
         return questions;
     }
 
-    public void updateLastTimeLesson(int idLesson, int grade){
+    public void updateLastTimeLesson(String idLesson){
 
     }
 }
