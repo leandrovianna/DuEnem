@@ -6,6 +6,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -104,6 +105,7 @@ public class QuestionActivity extends BaseActivity {
 
     public void nextQuestion(){
         current_lesson++;
+        ((ProgressBar)findViewById(R.id.progressBarQuestion)).setProgress((current_lesson*100)/questions.size());
         if(current_lesson >= questions.size()){
             endLesson();
         }
@@ -111,27 +113,20 @@ public class QuestionActivity extends BaseActivity {
             setContentQuestion((Question)questions.get(current_lesson), current_lesson+1);
         }
     }
-    public void setContentQuestion(Question question, int i){
+    public void setContentQuestion(Question question, int l){
         TextView textTitle = (TextView) findViewById(R.id.textTitleQuestion);
         TextView textContent = (TextView) findViewById(R.id.textContentQuestion);
 
-        textTitle.setText("Questão " + i);
+        textTitle.setText("Questão " + l);
         textContent.setText(question.getText());
 
-        ((RadioButton)findViewById(R.id.radioBt1) ).setText(question.getTextAlternative(0));
-        ((RadioButton)findViewById(R.id.radioBt1) ).setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorQuestionDefault, null));
-
-        ((RadioButton)findViewById(R.id.radioBt2) ).setText(question.getTextAlternative(1));
-        ((RadioButton)findViewById(R.id.radioBt2) ).setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorQuestionDefault, null));
-
-        ((RadioButton)findViewById(R.id.radioBt3) ).setText(question.getTextAlternative(2));
-        ((RadioButton)findViewById(R.id.radioBt3) ).setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorQuestionDefault, null));
-
-        ((RadioButton)findViewById(R.id.radioBt4) ).setText(question.getTextAlternative(3));
-        ((RadioButton)findViewById(R.id.radioBt4) ).setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorQuestionDefault, null));
-
-        ((RadioButton)findViewById(R.id.radioBt5) ).setText(question.getTextAlternative(4));
-        ((RadioButton)findViewById(R.id.radioBt5) ).setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorQuestionDefault, null));
+        int[] ListId = new int[]{R.id.radioBt1, R.id.radioBt2, R.id.radioBt3, R.id.radioBt4, R.id.radioBt5};
+        for(int i = 0; i < 5; i++){
+            RadioButton radioButton = (RadioButton)findViewById(R.id.radioBt1);
+            radioButton.setText(question.getTextAlternative(0));
+            radioButton.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorQuestionDefault, null));
+            radioButton.setChecked(false);
+        }
 
     }
 
@@ -175,11 +170,31 @@ public class QuestionActivity extends BaseActivity {
         }
     }
     private void endLesson(){
-        int grade = (cont_correct * 10) / questions.size();
-        Intent intent = new Intent(this, LessonEndedActivity.class);
-        intent.putExtra("GRADE", grade);
+        int grade = (cont_correct * 100) / questions.size();
+        TextView text1 = (TextView) findViewById(R.id.textTitleQuestion);
+        TextView text2 = (TextView) findViewById(R.id.textContentQuestion);
 
-        startActivity(intent);
-        finish();
+        ((ProgressBar)findViewById(R.id.progressBarQuestion)).setProgress(100);
+        if(grade >= 70){
+            text1.setText("Parabéns, você terminou a lição com sucesso!!");
+            setUserMadeQuestion();
+        }
+        else{
+            text1.setText("Que pena, você não acertou o suficiente\nNão desista, tente novamente!!");
+        }
+
+        text2.setText("Vocẽ acertou " + cont_correct + " de " + questions.size() + " questões.");
+
+        Button bt = (Button) findViewById(R.id.buttonQuestion);
+        bt.setText("Continuar");
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+    private void setUserMadeQuestion(){
+
     }
 }
