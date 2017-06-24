@@ -1,31 +1,30 @@
 package com.alpha2.duenem;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.model.Material;
 import com.alpha2.duenem.model.Question;
-
-import org.w3c.dom.Text;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
 public class QuestionActivity extends BaseActivity {
 
     public static final String QUESTION_EXTRA = "com.alpha2.duenem.question_extra";
+    private static final String TAG = QuestionActivity.class.getSimpleName();
 
     private int current_lesson;
     private List<Material> questions;
@@ -38,9 +37,29 @@ public class QuestionActivity extends BaseActivity {
         setContentLayout(R.layout.content_question);
         final Lesson lesson = (Lesson) getIntent().getSerializableExtra("LESSON");
 
-        questions = lesson.getMaterial();
-        current_lesson = 0;
-        setContentQuestion((Question) questions.get(0), 1);
+        Query materialsQuery = DBHelper.getMaterialsFromLesson(lesson.getUid());
+        materialsQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot materialSnap : dataSnapshot.getChildren()) {
+                    if (materialSnap.child("alternatives").exists()) {
+                        Question q = materialSnap.getValue(Question.class);
+                        lesson.addMaterial(q);
+                    } else {
+                        //make activity accept material too
+//                        Material m = materialSnap.getValue(Material.class);
+//                        lesson.addMaterial(m);
+                    }
+                    initiate(lesson);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, databaseError.getMessage());
+            }
+        });
+
         Button bt = (Button) findViewById(R.id.buttonQuestion);
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +94,12 @@ public class QuestionActivity extends BaseActivity {
                 }
             }
         });
+    }
 
+    private void initiate(Lesson lesson) {
+        questions = lesson.getMaterial();
+        current_lesson = -1;
+        nextQuestion();
     }
 
     public void nextQuestion(){

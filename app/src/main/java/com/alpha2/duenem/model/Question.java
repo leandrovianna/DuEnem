@@ -5,45 +5,41 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by misael on 01/06/17.
- */
-
 public class Question extends Material {
     private static final int ALTERNATIVES_MAX = 6;
-    private List<String> alternativesList;
-    private Map<String, Boolean> alternatives;
+    private List<String> alternatives;
     private int number_of_alternatives;
     private int correct_alternative;
 
     public Question(){
         super();
         number_of_alternatives = 0;
+        alternatives = new ArrayList<>();
     }
 
-    public Question(String title, String text, List<String> alternativesList, int correct_alternative){
+    public Question(String title, String text, List<String> alternatives, int correct_alternative){
         super(title, text);
-        this.alternativesList = alternativesList;
-        number_of_alternatives = alternativesList.size();
+        this.alternatives = alternatives;
+        number_of_alternatives = alternatives.size();
         if(number_of_alternatives > ALTERNATIVES_MAX) number_of_alternatives = 6;
         this.correct_alternative = correct_alternative;
 
     }
 
     public void addAlternative(String alternative_content){
-        this.alternativesList.add(alternative_content);
+        this.alternatives.add(alternative_content);
     }
 
-    public Map<String, Boolean> getAlternatives() {
+    public List<String> getAlternatives() {
         return alternatives;
     }
 
-    public void setAlternatives(Map<String, Boolean> alternatives) {
+    public void setAlternatives(List<String> alternatives) {
         this.alternatives = alternatives;
     }
 
     public String getTextAlternative(int i){
-        return alternativesList.get(i);
+        return alternatives.get(i);
     }
 
     public int getCorrect_alternative() {

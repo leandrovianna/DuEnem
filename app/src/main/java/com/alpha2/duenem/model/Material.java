@@ -1,16 +1,6 @@
 package com.alpha2.duenem.model;
 
-import android.app.Activity;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.alpha2.duenem.R;
-
 import java.io.Serializable;
-
-/**
- * Created by root on 13/06/17.
- */
 
 public class Material implements Serializable {
     private String title;
@@ -45,7 +35,4 @@ public class Material implements Serializable {
     public void addText(String text) {
         this.text += text;
     }
-
-
-
 }

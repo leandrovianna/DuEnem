@@ -6,14 +6,28 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by root on 13/06/17.
- */
-
 public class Topic implements Serializable {
     private String title;
     private String description;
-    private long id;
+    private String uid;
+    private Discipline discipline;
+
+    public Discipline getDiscipline() {
+        return discipline;
+    }
+
+    public void setDiscipline(Discipline discipline) {
+        this.discipline = discipline;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
     private List<Lesson> lessons;
 
     public Topic() {

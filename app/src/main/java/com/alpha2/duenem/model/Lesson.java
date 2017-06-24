@@ -1,6 +1,7 @@
 package com.alpha2.duenem.model;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,6 +14,15 @@ import java.util.List;
 public class Lesson implements Serializable {
     private String title;
     private String description;
+    private String uid;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     private List<Material> materials;
 
@@ -45,10 +55,10 @@ public class Lesson implements Serializable {
         return this.description;
     }
 
+    @Exclude
     public List<Material> getMaterial() {
         return this.materials;
     }
-
 
     public void addMaterial(Material material) {
         materials.add(material);
