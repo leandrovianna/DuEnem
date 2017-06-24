@@ -1,5 +1,6 @@
 package com.alpha2.duenem.db;
 
+import com.alpha2.duenem.model.Discipline;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
@@ -9,9 +10,9 @@ public abstract class DBHelper {
         return FirebaseDatabase.getInstance()
                 .getReference("discipline");
     }
-    public static Query getTopicsFromDiscipline(String disciplineUid) {
+    public static Query getTopicsFromDiscipline(Discipline discipline) {
         return FirebaseDatabase.getInstance()
-                .getReference("topic").child(disciplineUid);
+                .getReference("topic").child(discipline.getUid());
     }
 
     public static Query getLessonsFromTopic(String topicUid) {

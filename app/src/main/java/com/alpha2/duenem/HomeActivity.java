@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.alpha2.duenem.db.DBHelper;
+import com.alpha2.duenem.model.Discipline;
 import com.alpha2.duenem.model.Topic;
 import com.alpha2.duenem.view_pager_cards.LessonActivity;
 import com.google.firebase.database.DataSnapshot;
@@ -27,64 +28,74 @@ public class HomeActivity extends BaseActivity {
     private ValueEventListener mTopicRefListener;
     private Query mTopicRef;
 
+    public static final String DISCIPLINE_EXTRA = "discipline_extra";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentLayout(R.layout.content_home);
 
-        mAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, new ArrayList<Topic>());
+        Discipline discipline = (Discipline) getIntent().getSerializableExtra(DISCIPLINE_EXTRA);
+        mTopicRef = null;
 
-        ListView listView = (ListView) findViewById(R.id.listViewTopics);
-        listView.setAdapter(mAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Topic t = (Topic) parent.getItemAtPosition(position);
-                Intent intent = new Intent(HomeActivity.this, LessonActivity.class);
-                intent.putExtra(LessonActivity.TOPIC_EXTRA, t);
-                startActivity(intent);
-            }
-        });
+        if (discipline != null) {
 
-        mTopicRef = DBHelper.getTopicsFromDiscipline("4");
+            mAdapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_list_item_1, new ArrayList<Topic>());
 
-        mTopicRefListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mAdapter.clear();
-                for (DataSnapshot topicSnap : dataSnapshot.getChildren()) {
-                    Topic topic = topicSnap.getValue(Topic.class);
+            ListView listView = (ListView) findViewById(R.id.listViewTopics);
+            listView.setAdapter(mAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Topic t = (Topic) parent.getItemAtPosition(position);
+                    Intent intent = new Intent(HomeActivity.this, LessonActivity.class);
+                    intent.putExtra(LessonActivity.TOPIC_EXTRA, t);
+                    startActivity(intent);
+                }
+            });
 
-                    if (topic != null) {
-                        topic.setUid(topicSnap.getKey());
-                        mAdapter.add(topic);
+            mTopicRef = DBHelper.getTopicsFromDiscipline(discipline);
+
+            mTopicRefListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    mAdapter.clear();
+                    for (DataSnapshot topicSnap : dataSnapshot.getChildren()) {
+                        Topic topic = topicSnap.getValue(Topic.class);
+
+                        if (topic != null) {
+                            topic.setUid(topicSnap.getKey());
+                            mAdapter.add(topic);
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, databaseError.getMessage());
-                mAdapter.clear();
-                Toast.makeText(HomeActivity.this,
-                        "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
-                        .show();
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e(TAG, databaseError.getMessage());
+                    mAdapter.clear();
+                    Toast.makeText(HomeActivity.this,
+                            "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
+                            .show();
+                }
 
-        };
+            };
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mTopicRef.addValueEventListener(mTopicRefListener);
+        if (mTopicRef != null)
+            mTopicRef.addValueEventListener(mTopicRefListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mTopicRef.removeEventListener(mTopicRefListener);
+        if (mTopicRef != null)
+            mTopicRef.removeEventListener(mTopicRefListener);
     }
 
     @Override

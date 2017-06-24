@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = auth.getCurrentUser();
 
         Intent intent = (user != null)
-                ? IntentAbstractFactory.createHomeActivityIntent(this)
+                ? IntentAbstractFactory.createHomeActivityIntent(this, null)
                 : IntentAbstractFactory.createSignInActivityIntent(this);
         startActivity(intent);
         finish();

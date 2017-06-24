@@ -3,13 +3,15 @@ package com.alpha2.duenem;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.alpha2.duenem.model.Discipline;
 import com.alpha2.duenem.signin.SignInActivity;
 
 public abstract class IntentAbstractFactory {
 
-    public static Intent createHomeActivityIntent(Activity source) {
+    public static Intent createHomeActivityIntent(Activity source, Discipline discipline) {
         Intent intent = new Intent(source, HomeActivity.class);
         intent.putExtra(BaseActivity.SELECTED_ITEM_ID_EXTRA, R.id.materialestudo);
+        intent.putExtra(HomeActivity.DISCIPLINE_EXTRA, discipline);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }

@@ -18,14 +18,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alpha2.duenem.db.DBHelper;
+import com.alpha2.duenem.model.Discipline;
 import com.alpha2.duenem.signin.SignInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -71,6 +78,39 @@ public class BaseActivity extends AppCompatActivity
             mNavigationView.setCheckedItem(selectedId);
 
         mAuth = FirebaseAuth.getInstance();
+
+        Query disciplinesQuery = DBHelper.getDisciplines();
+
+        disciplinesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                SubMenu disciplinesMenu =  mNavigationView.getMenu().findItem(R.id.materialestudo)
+                        .getSubMenu();
+
+                for (DataSnapshot disciplineSnap : dataSnapshot.getChildren()) {
+                    Discipline d = disciplineSnap.getValue(Discipline.class);
+                    if (d != null) {
+                        d.setUid(disciplineSnap.getKey());
+                        final Intent intent = IntentAbstractFactory
+                                .createHomeActivityIntent(BaseActivity.this, d);
+
+                       disciplinesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, d.getName())
+                                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        startActivity(intent);
+                                        return false;
+                                    }
+                                });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -141,9 +181,6 @@ public class BaseActivity extends AppCompatActivity
 
         if (id == R.id.perfil && selectedId != R.id.perfil) {
             intent = IntentAbstractFactory.createSignInActivityIntent(this);
-        }
-        else  if (id == R.id.materialestudo && selectedId != R.id.materialestudo) {
-            intent = IntentAbstractFactory.createHomeActivityIntent(this);
         }
         else  if (id == R.id.treinar && selectedId != R.id.treinar) {
 
