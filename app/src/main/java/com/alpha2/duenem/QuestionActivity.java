@@ -170,6 +170,8 @@ public class QuestionActivity extends BaseActivity {
         }
     }
     private void endLesson(){
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroupQuestion);
+        radioGroup.setVisibility(View.INVISIBLE);
         int grade = (cont_correct * 100) / questions.size();
         TextView text1 = (TextView) findViewById(R.id.textTitleQuestion);
         TextView text2 = (TextView) findViewById(R.id.textContentQuestion);
