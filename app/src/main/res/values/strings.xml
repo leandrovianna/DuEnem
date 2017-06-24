@@ -26,5 +26,6 @@
     <string name="drawer_option_ranking">Ranking</string>
 
     <string name="title_activity_ranking">Ranking</string>
+    <string name="title_activity_lesson_ended">LessonEndedActivity</string>
 
 </resources>
