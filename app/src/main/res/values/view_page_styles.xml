@@ -3,7 +3,7 @@
 
 
     <style name="ButtonStyle" parent="Base.Widget.AppCompat.Button.Colored">
-        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="colorButtonNormal">@color/accent</item>
     </style>
 
 </resources>
