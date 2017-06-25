@@ -12,12 +12,13 @@ import android.widget.TextView;
 
 import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Lesson;
+import com.alpha2.duenem.model.LessonUser;
 import com.alpha2.duenem.model.Material;
 import com.alpha2.duenem.model.Question;
-import com.alpha2.duenem.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -25,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 public class QuestionActivity extends BaseActivity {
 
@@ -39,6 +39,7 @@ public class QuestionActivity extends BaseActivity {
     private boolean is_question = false;
     private SUBMIT_BUTTON_STATES buttonState;
     private Lesson mLesson;
+    private LessonUser mLessonUser;
 
     private enum SUBMIT_BUTTON_STATES {
         CONTINUE, VERIFY
@@ -66,7 +67,7 @@ public class QuestionActivity extends BaseActivity {
                         Material m = materialSnap.getValue(Material.class);
                         mLesson.addMaterial(m);
                     }
-                    initiate(mLesson);
+                    initiate();
                 }
             }
 
@@ -114,8 +115,26 @@ public class QuestionActivity extends BaseActivity {
         });
     }
 
-    private void initiate(Lesson lesson) {
-        materials = lesson.getMaterial();
+    private void initiate() {
+        String userUid = mAuth.getCurrentUser().getUid();
+        final Query lessonUsersQuery = DBHelper.getLessonsByUser(userUid)
+                .child(mLesson.getUid());
+
+        lessonUsersQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mLessonUser = dataSnapshot.getValue(LessonUser.class);
+                lessonUsersQuery.removeEventListener(this);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, databaseError.getMessage());
+                mLessonUser = null;
+            }
+        });
+
+        materials = mLesson.getMaterial();
         current_material = -1;
         nextQuestion();
     }
@@ -224,7 +243,7 @@ public class QuestionActivity extends BaseActivity {
         });
 
 
-        if(is_question == false){
+        if(!is_question){
             text1.setText(R.string.lesson_conclude);
             text2.setText("");
             return;
@@ -232,20 +251,37 @@ public class QuestionActivity extends BaseActivity {
 
         if(grade >= 70){
             text1.setText(R.string.end_lesson_success_message);
-            setUserMadeQuestion();
+            setUserLessonResult(true);
         }
         else{
             text1.setText(R.string.end_lesson_fail_message);
+            setUserLessonResult(false);
         }
 
         text2.setText(getString(R.string.lesson_result_message, cont_correct, materials.size()));
     }
 
-    private void setUserMadeQuestion() {
-        User actualUser = DuEnemApplication.getUser();
-        DatabaseReference questionUserRef = DBHelper.getQuestionMadeByUser(actualUser);
-        Date date = new Date();
-        String todayStr = date.toString();
-        questionUserRef.child(mLesson.getUid()).setValue(todayStr);
+    private void setUserLessonResult(boolean result) {
+        if (mLessonUser == null) {
+            mLessonUser = new LessonUser();
+        }
+
+        if (result)
+            mLessonUser.setCorrectStreak(mLessonUser.getCorrectStreak()+1);
+        else
+            mLessonUser.setCorrectStreak(0);
+
+        mLessonUser.setLastDate(new Date());
+        mLessonUser.setNextDate(calculateNextDate(mLessonUser.getCorrectStreak(), mLessonUser.getLastDate()));
+
+        String userUid = mAuth.getCurrentUser().getUid();
+        DatabaseReference lessonUserRef = DBHelper.getLessonsByUser(userUid)
+                .child(mLesson.getUid());
+
+        lessonUserRef.setValue(mLessonUser);
+    }
+
+    private Date calculateNextDate(int correctStreak, Date lastDate) {
+        return new Date();
     }
 }

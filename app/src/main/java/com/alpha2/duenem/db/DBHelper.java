@@ -27,13 +27,13 @@ public abstract class DBHelper {
                 .getReference("material").child(lessonUid);
     }
 
-    public static DatabaseReference getQuestionMadeByUser(User user) {
-        return FirebaseDatabase.getInstance()
-                .getReference("questionUser").child(user.getUid());
-    }
-
     public static DatabaseReference getUsers() {
         return FirebaseDatabase.getInstance().getReference()
                 .child("user");
+    }
+
+    public static DatabaseReference getLessonsByUser(String userUid) {
+        return FirebaseDatabase.getInstance().getReference()
+                .child("lessonUser").child(userUid);
     }
 }
