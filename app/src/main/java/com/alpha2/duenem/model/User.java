@@ -16,7 +16,7 @@ public class User implements Serializable {
     private String uid;
     private String phoneNumber;
     private Uri photoUrl;
-    private List<Question> questions;
+    private List<LessonHistoric> historic;
 
     // Required!
     public User() {
@@ -28,7 +28,7 @@ public class User implements Serializable {
         this.uid = user.getUid();
         this.photoUrl = user.getPhotoUrl();
         this.phoneNumber = user.getPhoneNumber();
-        this.questions = new ArrayList<>();
+        this.historic = new ArrayList<>();
     }
 
     public String getName() {
@@ -76,8 +76,8 @@ public class User implements Serializable {
         this.photoUrl = photoUrl;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public List<LessonHistoric> getHistoric() {
+        return historic;
     }
 
     public void updateLastTimeLesson(String idLesson){
