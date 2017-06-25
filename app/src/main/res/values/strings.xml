@@ -36,5 +36,6 @@
     <string name="end_lesson_success_message">Parabéns, você terminou a lição com sucesso!!</string>
     <string name="end_lesson_fail_message">Que pena, você não acertou o suficiente\nNão desista, tente novamente!!</string>
     <string name="lesson_result_message">Vocẽ acertou %1$d de %2$d questões.</string>
+    <string name="lesson_conclude">\"Parabéns, você concluiu a lição\"</string>
 
 </resources>

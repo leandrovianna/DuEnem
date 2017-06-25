@@ -33,6 +33,7 @@ public class QuestionActivity extends BaseActivity {
     private int current_material;
     private List<Material> materials;
     private int cont_correct = 0;
+    private boolean is_question = false;
     private SUBMIT_BUTTON_STATES buttonState;
 
     private enum SUBMIT_BUTTON_STATES {
@@ -54,6 +55,7 @@ public class QuestionActivity extends BaseActivity {
 
                 for (DataSnapshot materialSnap : dataSnapshot.getChildren()) {
                     if (materialSnap.child("alternatives").exists()) {
+                        is_question = true;
                         Question q = materialSnap.getValue(Question.class);
                         lesson.addMaterial(q);
                     } else {
@@ -207,8 +209,23 @@ public class QuestionActivity extends BaseActivity {
         int grade = (cont_correct * 100) / materials.size();
         TextView text1 = (TextView) findViewById(R.id.textTitleQuestion);
         TextView text2 = (TextView) findViewById(R.id.textContentQuestion);
-
         ((ProgressBar)findViewById(R.id.progressBarQuestion)).setProgress(100);
+        Button bt = (Button) findViewById(R.id.buttonQuestion);
+        bt.setText(getString(R.string.bt_submit_continue_message));
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+        if(is_question == false){
+            text1.setText(R.string.lesson_conclude);
+            text2.setText("");
+            return;
+        }
+
         if(grade >= 70){
             text1.setText(R.string.end_lesson_success_message);
             setUserMadeQuestion();
@@ -218,15 +235,6 @@ public class QuestionActivity extends BaseActivity {
         }
 
         text2.setText(getString(R.string.lesson_result_message, cont_correct, materials.size()));
-
-        Button bt = (Button) findViewById(R.id.buttonQuestion);
-        bt.setText(getString(R.string.bt_submit_continue_message));
-        bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
     private void setUserMadeQuestion(){
