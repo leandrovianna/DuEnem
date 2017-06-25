@@ -26,6 +26,7 @@ public class User implements Serializable {
     public void setPoints(int points) {
         this.points = points;
     }
+    private List<LessonHistoric> historic;
 
     // Required!
     public User() {
@@ -33,7 +34,7 @@ public class User implements Serializable {
 
     public User(@NonNull FirebaseUser user) {
         copyFromFirebaseUser(user);
-        this.questions = new ArrayList<>();
+        this.historic = new ArrayList<>();
     }
 
     public void copyFromFirebaseUser(@NonNull FirebaseUser firebaseUser) {
@@ -89,8 +90,8 @@ public class User implements Serializable {
         this.photoUrl = photoUrl;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public List<LessonHistoric> getHistoric() {
+        return historic;
     }
 
     public void updateLastTimeLesson(String idLesson){

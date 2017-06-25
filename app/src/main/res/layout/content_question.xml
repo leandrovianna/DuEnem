@@ -1,38 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".QuestionActivity"
-    android:orientation="vertical">
-
-    <ProgressBar
-        android:id="@+id/progressBarQuestion"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:progress="5"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    >
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/progressBarQuestion"
-        android:layout_marginTop="8dp">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="8dp"
+        >
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
+
+            <ProgressBar
+                android:id="@+id/progressBarQuestion"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="368dp"
+                android:layout_height="wrap_content"
+                android:progress="5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/textTitleQuestion"
                 style="@style/TextAppearance.AppCompat.Title"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginLeft="16dp"
@@ -41,14 +43,13 @@
                 android:layout_marginTop="8dp"
                 android:text=""
                 android:textAlignment="center"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/progressBarQuestion" />
 
             <TextView
                 android:id="@+id/textContentQuestion"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
@@ -57,20 +58,14 @@
                 android:layout_marginTop="8dp"
                 android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textTitleQuestion" />
 
             <RadioGroup
                 android:id="@+id/radioGroupQuestion"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -108,13 +103,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/bt_submit_verify_message"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/radioGroupQuestion"
-                app:layout_goneMarginEnd="10dp" />
+                app:layout_goneMarginEnd="10dp"
+                app:layout_constraintVertical_bias="1.0" />
 
             <TextView
                 android:id="@+id/textState"
@@ -128,11 +124,10 @@
                 android:textColor="@color/colorQuestionCorrect"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/buttonQuestion"
-                app:layout_constraintTop_toBottomOf="@+id/radioGroupQuestion"
-                app:layout_constraintVertical_bias="0.5" />
+                app:layout_constraintTop_toBottomOf="@+id/radioGroupQuestion" />
 
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
