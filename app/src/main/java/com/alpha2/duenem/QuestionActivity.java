@@ -14,13 +14,16 @@ import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.model.Material;
 import com.alpha2.duenem.model.Question;
+import com.alpha2.duenem.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -35,6 +38,7 @@ public class QuestionActivity extends BaseActivity {
     private int cont_correct = 0;
     private boolean is_question = false;
     private SUBMIT_BUTTON_STATES buttonState;
+    private Lesson mLesson;
 
     private enum SUBMIT_BUTTON_STATES {
         CONTINUE, VERIFY
@@ -44,25 +48,25 @@ public class QuestionActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentLayout(R.layout.content_question);
-        final Lesson lesson = (Lesson) getIntent().getSerializableExtra(LESSON_EXTRA);
-        this.setTitle(lesson.getTitle());
+        mLesson = (Lesson) getIntent().getSerializableExtra(LESSON_EXTRA);
+        this.setTitle(mLesson.getTitle());
 
-        Query materialsQuery = DBHelper.getMaterialsFromLesson(lesson.getUid());
-        materialsQuery.addValueEventListener(new ValueEventListener() {
+        Query materialsQuery = DBHelper.getMaterialsFromLesson(mLesson.getUid());
+        materialsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                lesson.getMaterial().clear();
+                mLesson.getMaterial().clear();
 
                 for (DataSnapshot materialSnap : dataSnapshot.getChildren()) {
                     if (materialSnap.child("alternatives").exists()) {
                         is_question = true;
                         Question q = materialSnap.getValue(Question.class);
-                        lesson.addMaterial(q);
+                        mLesson.addMaterial(q);
                     } else {
                         Material m = materialSnap.getValue(Material.class);
-                        lesson.addMaterial(m);
+                        mLesson.addMaterial(m);
                     }
-                    initiate(lesson);
+                    initiate(mLesson);
                 }
             }
 
@@ -237,7 +241,11 @@ public class QuestionActivity extends BaseActivity {
         text2.setText(getString(R.string.lesson_result_message, cont_correct, materials.size()));
     }
 
-    private void setUserMadeQuestion(){
-        //TODO
+    private void setUserMadeQuestion() {
+        User actualUser = DuEnemApplication.getUser();
+        DatabaseReference questionUserRef = DBHelper.getQuestionMadeByUser(actualUser);
+        Date date = new Date();
+        String todayStr = date.toString();
+        questionUserRef.child(mLesson.getUid()).setValue(todayStr);
     }
 }

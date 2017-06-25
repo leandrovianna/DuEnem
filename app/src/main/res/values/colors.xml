@@ -18,4 +18,6 @@
     <color name="colorQuestionCorrect">#29b6f6</color>
     <color name="colorQuestionDefault">#808080</color>
     <color name="white">#ffffff</color>
+
+    <color name="background_lesson_activity">#ffc107</color>
 </resources>
