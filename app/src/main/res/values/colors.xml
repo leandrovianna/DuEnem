@@ -19,5 +19,5 @@
     <color name="colorQuestionDefault">#808080</color>
     <color name="white">#ffffff</color>
 
-    <color name="background_lesson_activity">#ffc107</color>
+    <color name="background_lesson_activity">#e0e0e0</color>
 </resources>
