@@ -81,11 +81,12 @@ public class BaseActivity extends AppCompatActivity
 
         Query disciplinesQuery = DBHelper.getDisciplines();
 
-        disciplinesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        disciplinesQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 SubMenu disciplinesMenu =  mNavigationView.getMenu().findItem(R.id.materialestudo)
                         .getSubMenu();
+                disciplinesMenu.clear();
 
                 for (DataSnapshot disciplineSnap : dataSnapshot.getChildren()) {
                     Discipline d = disciplineSnap.getValue(Discipline.class);
@@ -99,8 +100,9 @@ public class BaseActivity extends AppCompatActivity
                                 .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                                     @Override
                                     public boolean onMenuItemClick(MenuItem item) {
+                                        intent.putExtra(BaseActivity.SELECTED_ITEM_ID_EXTRA, item.getItemId());
                                         startActivity(intent);
-                                        return false;
+                                        return true;
                                     }
                                 });
                     }
@@ -109,7 +111,7 @@ public class BaseActivity extends AppCompatActivity
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.w(TAG, databaseError.getMessage());
             }
         });
     }

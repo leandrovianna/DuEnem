@@ -17,18 +17,31 @@ public class User implements Serializable {
     private String phoneNumber;
     private Uri photoUrl;
     private List<Question> questions;
+    private int points;
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
 
     // Required!
     public User() {
     }
 
     public User(@NonNull FirebaseUser user) {
-        this.name = user.getDisplayName();
-        this.email = user.getEmail();
-        this.uid = user.getUid();
-        this.photoUrl = user.getPhotoUrl();
-        this.phoneNumber = user.getPhoneNumber();
+        copyFromFirebaseUser(user);
         this.questions = new ArrayList<>();
+    }
+
+    public void copyFromFirebaseUser(@NonNull FirebaseUser firebaseUser) {
+        this.name = firebaseUser.getDisplayName();
+        this.email = firebaseUser.getEmail();
+        this.uid = firebaseUser.getUid();
+        this.photoUrl = firebaseUser.getPhotoUrl();
+        this.phoneNumber = firebaseUser.getPhoneNumber();
     }
 
     public String getName() {

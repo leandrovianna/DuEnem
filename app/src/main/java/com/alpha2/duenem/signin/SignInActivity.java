@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.alpha2.duenem.BaseActivity;
 import com.alpha2.duenem.R;
+import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.User;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -26,8 +27,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SignInActivity extends BaseActivity implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -72,8 +76,8 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
@@ -166,10 +170,29 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                 });
     }
 
-    private void createUserDb(FirebaseUser firebaseUser) {
-        User user = new User(firebaseUser);
+    private void createUserDb(@NonNull final FirebaseUser firebaseUser) {
 
-        mDatabase.child("user").child(firebaseUser.getUid()).setValue(user);
+        final DatabaseReference userRef = DBHelper.getUsers();
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user;
+                if (dataSnapshot.child(firebaseUser.getUid()).exists()) {
+                    user = dataSnapshot.child(firebaseUser.getUid()).getValue(User.class);
+                    user.copyFromFirebaseUser(firebaseUser);
+                } else {
+                    user = new User(firebaseUser);
+                    user.setPoints(0);
+                }
+
+                userRef.child(user.getUid()).setValue(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, databaseError.getMessage());
+            }
+        });
     }
 
     @Override

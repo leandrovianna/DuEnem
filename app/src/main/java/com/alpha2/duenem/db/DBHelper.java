@@ -31,4 +31,9 @@ public abstract class DBHelper {
         return FirebaseDatabase.getInstance()
                 .getReference("questionUser").child(user.getUid());
     }
+
+    public static DatabaseReference getUsers() {
+        return FirebaseDatabase.getInstance().getReference()
+                .child("user");
+    }
 }
