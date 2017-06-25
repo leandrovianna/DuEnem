@@ -90,7 +90,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, QuestionActivity.class);
-                intent.putExtra("LESSON", item);
+                intent.putExtra(QuestionActivity.LESSON_EXTRA, item);
                 context.startActivity(intent);
             }
         });

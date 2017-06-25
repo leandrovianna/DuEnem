@@ -1,6 +1,5 @@
 package com.alpha2.duenem;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
@@ -20,8 +19,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -29,34 +26,39 @@ import java.util.Random;
 
 public class QuestionActivity extends BaseActivity {
 
-    public static final String QUESTION_EXTRA = "com.alpha2.duenem.question_extra";
     private static final String TAG = QuestionActivity.class.getSimpleName();
+    public static final String LESSON_EXTRA = "lesson_extra";
 
     private int correct_alternative;
-    private int current_lesson;
-    private List<Material> questions;
+    private int current_material;
+    private List<Material> materials;
     private int cont_correct = 0;
-    private int buttonState = 0;
+    private SUBMIT_BUTTON_STATES buttonState;
+
+    private enum SUBMIT_BUTTON_STATES {
+        CONTINUE, VERIFY
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentLayout(R.layout.content_question);
-        final Lesson lesson = (Lesson) getIntent().getSerializableExtra("LESSON");
+        final Lesson lesson = (Lesson) getIntent().getSerializableExtra(LESSON_EXTRA);
         this.setTitle(lesson.getTitle());
 
         Query materialsQuery = DBHelper.getMaterialsFromLesson(lesson.getUid());
         materialsQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                lesson.getMaterial().clear();
+
                 for (DataSnapshot materialSnap : dataSnapshot.getChildren()) {
                     if (materialSnap.child("alternatives").exists()) {
                         Question q = materialSnap.getValue(Question.class);
                         lesson.addMaterial(q);
                     } else {
-                        //make activity accept material too
-//                        Material m = materialSnap.getValue(Material.class);
-//                        lesson.addMaterial(m);
+                        Material m = materialSnap.getValue(Material.class);
+                        lesson.addMaterial(m);
                     }
                     initiate(lesson);
                 }
@@ -68,13 +70,13 @@ public class QuestionActivity extends BaseActivity {
             }
         });
 
-
+        buttonState = SUBMIT_BUTTON_STATES.VERIFY;
 
         Button bt = (Button) findViewById(R.id.buttonQuestion);
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(buttonState == 0) {
+                if(buttonState == SUBMIT_BUTTON_STATES.VERIFY) {
                     RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroupQuestion);
                     int selectedId = radioGroup.getCheckedRadioButtonId();
                     int i_selected = -1;
@@ -98,7 +100,7 @@ public class QuestionActivity extends BaseActivity {
                         ChangeButtonState();
                     }
                 }
-                else{
+                else {
                     ChangeButtonState();
                     nextQuestion();
                 }
@@ -107,31 +109,46 @@ public class QuestionActivity extends BaseActivity {
     }
 
     private void initiate(Lesson lesson) {
-        questions = lesson.getMaterial();
-        current_lesson = -1;
+        materials = lesson.getMaterial();
+        current_material = -1;
         nextQuestion();
     }
 
     public void nextQuestion(){
-        current_lesson++;
-        ((ProgressBar)findViewById(R.id.progressBarQuestion)).setProgress((current_lesson*100)/questions.size());
-        if(current_lesson >= questions.size()){
+        current_material++;
+        ((ProgressBar)findViewById(R.id.progressBarQuestion)).setProgress((current_material *100)/ materials.size());
+        if(current_material >= materials.size()){
             endLesson();
         }
         else{
-            setContentQuestion((Question)questions.get(current_lesson), current_lesson+1);
+            setContent(materials.get(current_material));
         }
     }
-    public void setContentQuestion(Question question, int l){
+
+    private void setContent(Material material) {
         TextView textTitle = (TextView) findViewById(R.id.textTitleQuestion);
         TextView textContent = (TextView) findViewById(R.id.textContentQuestion);
 
-        textTitle.setText("Questão " + l);
-        textContent.setText(question.getText());
+        textTitle.setText(getString(R.string.material_title, current_material+1));
+        textContent.setText(material.getText());
+
+        findViewById(R.id.radioGroupQuestion).setVisibility(View.GONE);
+
+        if (material instanceof Question) {
+            setContentQuestion((Question) material, current_material+1);
+        } else {
+            ChangeButtonState();
+            cont_correct++; //material count like question corrected
+        }
+    }
+
+    private void setContentQuestion(Question question, int l){
+        findViewById(R.id.radioGroupQuestion).setVisibility(View.VISIBLE);
+
+        TextView textTitle = (TextView) findViewById(R.id.textTitleQuestion);
+        textTitle.setText(getString(R.string.question_title, l));
 
         int[] ListId = new int[]{R.id.radioBt1, R.id.radioBt2, R.id.radioBt3, R.id.radioBt4, R.id.radioBt5};
-
-        Random generator = new Random();
         Integer[] order = new Integer[]{0, 1, 2, 3, 4};
         List<Integer> list = Arrays.asList(order);
         Collections.shuffle(list);
@@ -144,19 +161,16 @@ public class QuestionActivity extends BaseActivity {
             if(list.get(i) == 0)
                 correct_alternative = i;
         }
-
-
     }
-
 
     private void ShowCorrect(){
         TextView textView = (TextView) findViewById(R.id.textState);
-        textView.setText("Parabéns, você acertou a questao");
+        textView.setText(R.string.correct_answer_message);
     }
 
     private void ShowIncorrect(int correct_alternative){
         TextView textView = (TextView) findViewById(R.id.textState);
-        textView.setText("Que pena, você errou a questao");
+        textView.setText(R.string.incorrect_answer_message);
 
         int id = -1;
         switch (correct_alternative){
@@ -176,37 +190,37 @@ public class QuestionActivity extends BaseActivity {
 
     private void ChangeButtonState(){
         Button bt = (Button) findViewById(R.id.buttonQuestion);
-        if(buttonState == 0){
-            bt.setText("Continuar");
-            buttonState = 1;
+        if(buttonState == SUBMIT_BUTTON_STATES.VERIFY){
+            bt.setText(R.string.bt_submit_continue_message);
+            buttonState = SUBMIT_BUTTON_STATES.CONTINUE;
         }
         else{
             TextView textView = (TextView) findViewById(R.id.textState);
             textView.setText("");
-            bt.setText("Verificar");
-            buttonState = 0;
+            bt.setText(R.string.bt_submit_verify_message);
+            buttonState = SUBMIT_BUTTON_STATES.VERIFY;
         }
     }
     private void endLesson(){
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroupQuestion);
         radioGroup.setVisibility(View.INVISIBLE);
-        int grade = (cont_correct * 100) / questions.size();
+        int grade = (cont_correct * 100) / materials.size();
         TextView text1 = (TextView) findViewById(R.id.textTitleQuestion);
         TextView text2 = (TextView) findViewById(R.id.textContentQuestion);
 
         ((ProgressBar)findViewById(R.id.progressBarQuestion)).setProgress(100);
         if(grade >= 70){
-            text1.setText("Parabéns, você terminou a lição com sucesso!!");
+            text1.setText(R.string.end_lesson_success_message);
             setUserMadeQuestion();
         }
         else{
-            text1.setText("Que pena, você não acertou o suficiente\nNão desista, tente novamente!!");
+            text1.setText(R.string.end_lesson_fail_message);
         }
 
-        text2.setText("Vocẽ acertou " + cont_correct + " de " + questions.size() + " questões.");
+        text2.setText(getString(R.string.lesson_result_message, cont_correct, materials.size()));
 
         Button bt = (Button) findViewById(R.id.buttonQuestion);
-        bt.setText("Continuar");
+        bt.setText(getString(R.string.bt_submit_continue_message));
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,7 +228,8 @@ public class QuestionActivity extends BaseActivity {
             }
         });
     }
-    private void setUserMadeQuestion(){
 
+    private void setUserMadeQuestion(){
+        //TODO
     }
 }

@@ -21,11 +21,20 @@
     <string name="title_activity_lesson">LessonActivity</string>
 
     <string name="drawer_option_account">Sua Conta</string>
-    <string name="drawer_option_study">Material de Estudo</string>
+    <string name="drawer_option_study">Disciplinas</string>
     <string name="drawer_option_training">Treinar</string>
     <string name="drawer_option_ranking">Ranking</string>
 
     <string name="title_activity_ranking">Ranking</string>
-    <string name="title_activity_lesson_ended">LessonEndedActivity</string>
+
+    <string name="material_title">Material de Estudo %1$d</string>
+    <string name="question_title">Questão %1$d</string>
+    <string name="correct_answer_message">Parabéns, você acertou a questão.</string>
+    <string name="incorrect_answer_message">Que pena, você errou a questão.</string>
+    <string name="bt_submit_continue_message">Continuar</string>
+    <string name="bt_submit_verify_message">Verificar</string>
+    <string name="end_lesson_success_message">Parabéns, você terminou a lição com sucesso!!</string>
+    <string name="end_lesson_fail_message">Que pena, você não acertou o suficiente\nNão desista, tente novamente!!</string>
+    <string name="lesson_result_message">Vocẽ acertou %1$d de %2$d questões.</string>
 
 </resources>
