@@ -36,4 +36,8 @@ public abstract class DBHelper {
         return FirebaseDatabase.getInstance().getReference()
                 .child("lessonUser").child(userUid);
     }
+
+    public static Query getQueryRanking() {
+        return DBHelper.getUsers().orderByChild("points").limitToFirst(100);
+    }
 }
