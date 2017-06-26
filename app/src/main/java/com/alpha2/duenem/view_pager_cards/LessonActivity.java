@@ -21,7 +21,7 @@ public class LessonActivity extends BaseActivity {
     public static final String TOPIC_EXTRA = "com.alpha2.duenem.topic_extra";
     private static final String TAG = LessonActivity.class.getSimpleName();
     private ViewPager mViewPager;
-
+    private Boolean isDone;
     private CardPagerAdapter mCardAdapter;
     private ShadowTransformer mCardShadowTransformer;
 
@@ -62,15 +62,23 @@ public class LessonActivity extends BaseActivity {
         });
     }
 
-    private Boolean VerifyIsDone(Lesson lesson) {
-        Boolean ans = false;
+    private Boolean VerifyIsDone(final Lesson lesson) {
+         isDone = false;
 
-        Query lessonQuery = DBHelper.getLessonUsersByUser(lesson.getUid());
+        Query lessonQuery = DBHelper.getLessonUsersByUser(mAuth.getCurrentUser().getUid());
+        lessonQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild(lesson.getUid())) isDone = true;
+            }
 
-        if(lessonQuery != null)
-            ans = true;
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        return ans;
+            }
+        });
+
+        return isDone;
     }
 
     private void initiateList() {
