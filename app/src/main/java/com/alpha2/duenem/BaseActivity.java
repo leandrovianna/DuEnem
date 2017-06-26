@@ -23,9 +23,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Discipline;
+import com.alpha2.duenem.model.Lesson;
+import com.alpha2.duenem.model.LessonUser;
+import com.alpha2.duenem.model.Topic;
 import com.alpha2.duenem.signin.SignInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,6 +53,9 @@ public class BaseActivity extends AppCompatActivity
     protected FirebaseAuth mAuth;
     private ProfilePhotoTarget mProfilePhotoHandler;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+
+    private Topic train_topic;
+    private Lesson train_lesson;
 
     protected View setContentLayout(int contentLayoutResId) {
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -186,7 +193,12 @@ public class BaseActivity extends AppCompatActivity
             intent = IntentAbstractFactory.createSignInActivityIntent(this);
         }
         else  if (id == R.id.treinar && selectedId != R.id.treinar) {
-
+            Topic topic = createTopicTrain();
+            if(topic != null && topic.getLessons() != null)
+                intent = IntentAbstractFactory.createTrainActivity(this, topic);
+            else{
+                // error
+            }
         }
         else  if (id == R.id.ranking && selectedId != R.id.ranking) {
             intent = IntentAbstractFactory.createRankingActivityIntent(this);
@@ -243,5 +255,67 @@ public class BaseActivity extends AppCompatActivity
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {}
     }
+
+    private Topic createTopicTrain(){
+        train_topic = new Topic("Treinar", "Treine lições que você está esquecendo");
+
+        String userUid = mAuth.getCurrentUser().getUid();
+        final Query lessonUsersQuery = DBHelper.getLessonsByUser(userUid);
+        ValueEventListener mLessonsUserListener;
+        mLessonsUserListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot topicSnap : dataSnapshot.getChildren()) {
+                    Lesson lesson = getLessonByUid(topicSnap.getKey());
+
+                    if (lesson != null) {
+                        train_topic.addLesson(lesson);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, databaseError.getMessage());
+                Toast.makeText(BaseActivity.this, "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
+                        .show();
+            }
+
+        };
+        lessonUsersQuery.addValueEventListener(mLessonsUserListener);
+
+        return train_topic;
+
+    }
+
+    private Lesson getLessonByUid(final String lessonUid){
+        train_lesson = null;
+        ValueEventListener mLessonListener;
+        Query mLesson;
+
+        mLesson = DBHelper.getLessonByUid(lessonUid);
+        mLessonListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                train_lesson = dataSnapshot.getValue(Lesson.class);
+                if (train_lesson != null) {
+                    train_lesson.setUid(dataSnapshot.getKey());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, databaseError.getMessage());
+                Toast.makeText(BaseActivity.this,
+                        "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
+                        .show();
+            }
+
+        };
+        mLesson.addValueEventListener(mLessonListener);
+
+        return train_lesson;
+    }
+
 }
 
