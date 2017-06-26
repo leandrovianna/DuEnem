@@ -12,11 +12,14 @@ import com.alpha2.duenem.BaseActivity;
 import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.R;
+import com.alpha2.duenem.model.LessonUser;
 import com.alpha2.duenem.model.Topic;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Date;
 
 public class TrainActivity extends BaseActivity {
     public static final String TOPIC_EXTRA = "com.alpha2.duenem.topic_extra";
@@ -53,16 +56,20 @@ public class TrainActivity extends BaseActivity {
     public void populateAdapter(){
 
         String userUid = mAuth.getCurrentUser().getUid();
-        final Query lessonUsersQuery = DBHelper.getLessonsByUser(userUid);
+        final Query lessonUsersQuery = DBHelper.getLessonsByUser(userUid).orderByChild("nextDate");
         ValueEventListener mLessonsUserListener;
+
         mLessonsUserListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                int cont = 0;
                 for (DataSnapshot topicSnap : dataSnapshot.getChildren()) {
                     Lesson lesson = getLessonByUid(topicSnap.getKey());
-
-                    if (lesson != null) {
+                    LessonUser lessonUser = topicSnap.getValue(LessonUser.class);
+                    Date nextDate = lessonUser.getNextDate();
+                    if (lesson != null && !nextDate.after(new Date()) && cont <= 10 ) {
                         mCardAdapter.addLesson(lesson);
+                        cont++;
                     }
                 }
             }
