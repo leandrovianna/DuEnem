@@ -2,6 +2,7 @@ package com.alpha2.duenem;
 
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class QuestionActivity extends BaseActivity {
 
@@ -230,6 +232,7 @@ public class QuestionActivity extends BaseActivity {
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroupQuestion);
         radioGroup.setVisibility(View.INVISIBLE);
         int grade = (cont_correct * 100) / materials.size();
+
         TextView text1 = (TextView) findViewById(R.id.textTitleQuestion);
         TextView text2 = (TextView) findViewById(R.id.textContentQuestion);
         ((ProgressBar)findViewById(R.id.progressBarQuestion)).setProgress(100);
@@ -251,28 +254,32 @@ public class QuestionActivity extends BaseActivity {
 
         if(grade >= 70){
             text1.setText(R.string.end_lesson_success_message);
-            setUserLessonResult(true);
         }
         else{
             text1.setText(R.string.end_lesson_fail_message);
-            setUserLessonResult(false);
         }
 
         text2.setText(getString(R.string.lesson_result_message, cont_correct, materials.size()));
+
+        setUserLessonResult(grade);
     }
 
-    private void setUserLessonResult(boolean result) {
+    private void setUserLessonResult(int grade) {
         if (mLessonUser == null) {
             mLessonUser = new LessonUser();
         }
 
-        if (result)
-            mLessonUser.setCorrectStreak(mLessonUser.getCorrectStreak()+1);
-        else
-            mLessonUser.setCorrectStreak(0);
+        int q = 0;
+        if(grade >= 90) q = 5;
+        else if(grade >= 80) q = 4;
+        else if(grade >= 65) q = 3;
+        else if(grade >= 50) q = 2;
+        else if(grade >= 30) q = 1;
+
+        mLessonUser.setNextInterval(q);
 
         mLessonUser.setLastDate(new Date());
-        mLessonUser.setNextDate(calculateNextDate(mLessonUser.getCorrectStreak(), mLessonUser.getLastDate()));
+        mLessonUser.setNextDate(calculateNextDate(mLessonUser));
 
         String userUid = mAuth.getCurrentUser().getUid();
         DatabaseReference lessonUserRef = DBHelper.getLessonsByUser(userUid)
@@ -281,7 +288,11 @@ public class QuestionActivity extends BaseActivity {
         lessonUserRef.setValue(mLessonUser);
     }
 
-    private Date calculateNextDate(int correctStreak, Date lastDate) {
-        return new Date();
+    private Date calculateNextDate(LessonUser lessonUser) {
+        Date date =  new Date();
+        int interval = lessonUser.getInterval();
+        date = new Date(date.getTime() + TimeUnit.DAYS.toMillis(interval));
+        return date;
     }
+
 }

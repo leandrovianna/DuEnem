@@ -109,4 +109,7 @@ public class LessonUser implements Serializable {
             correctStreak++;
         }
     }
+    public int getInterval(){
+        return interval;
+    }
 }
