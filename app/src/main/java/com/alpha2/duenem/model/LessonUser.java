@@ -13,12 +13,13 @@ public class LessonUser implements Serializable {
     private Date lastDate;
     private int correctStreak;
     private Date nextDate;
-
+    private double EF;
     private static SimpleDateFormat dateFormat;
 
     public LessonUser() {
         if (dateFormat == null)
             dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        this.EF = 1.3;
     }
 
     public LessonUser(Date lastDate, int correctStreak, Date nextDate) {
@@ -26,6 +27,7 @@ public class LessonUser implements Serializable {
         this.lastDate = lastDate;
         this.correctStreak = correctStreak;
         this.nextDate = nextDate;
+        this.EF = 1.3;
     }
 
     @Exclude
@@ -74,5 +76,14 @@ public class LessonUser implements Serializable {
 
     public void setLastDate(String lastDate) throws ParseException {
         this.lastDate = dateFormat.parse(lastDate);
+    }
+
+    public double getEF(){
+        return this.EF;
+    }
+
+    public void setNextEF(int q){
+        EF = EF+(0.1-(5-q)*(0.08+(5-q)*0.02));
+        if(EF < 1.3) EF = 1.3;
     }
 }
