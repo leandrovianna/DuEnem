@@ -39,5 +39,6 @@
     <string name="lesson_conclude">\"Parabéns, você concluiu a lição\"</string>
 
     <string name="title_train_activity">Treinar</string>
+    <string name="refazer">Refazer</string>
 
 </resources>

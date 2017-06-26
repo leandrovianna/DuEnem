@@ -48,6 +48,7 @@ public class LessonActivity extends BaseActivity {
                     if (l != null) {
                         l.setUid(lessonSnap.getKey());
                         l.setTopic(topic);
+                        l.setIsDone(VerifyIsDone(l));
                         mCardAdapter.addLesson(l);
                     }
                     initiateList();
@@ -59,6 +60,17 @@ public class LessonActivity extends BaseActivity {
                 Log.w(TAG, databaseError.getMessage());
             }
         });
+    }
+
+    private Boolean VerifyIsDone(Lesson lesson) {
+        Boolean ans = false;
+
+        Query lessonQuery = DBHelper.getLessonUsersByUser(lesson.getUid());
+
+        if(lessonQuery != null)
+            ans = true;
+
+        return ans;
     }
 
     private void initiateList() {

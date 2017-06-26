@@ -90,10 +90,13 @@ public class LessonUser implements Serializable {
         if(EF < 1.3) EF = 1.3;
     }
 
-    public void setNextInterval(int q){
+    public void setNextInterval(int q, Boolean isDone){
         if (q < 3) {
             interval = 1;
             correctStreak = 0;
+        }
+        else if(isDone){
+            return;
         }
         else if(correctStreak == 0) {
             interval = 1;

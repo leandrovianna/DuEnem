@@ -268,10 +268,6 @@ public class QuestionActivity extends BaseActivity {
     }
 
     private void setUserLessonResult(int grade) {
-        if (mLessonUser == null) {
-            mLessonUser = new LessonUser();
-        }
-
         int q = 0;
         if(grade >= 90) q = 5;
         else if(grade >= 80) q = 4;
@@ -279,7 +275,11 @@ public class QuestionActivity extends BaseActivity {
         else if(grade >= 50) q = 2;
         else if(grade >= 30) q = 1;
 
-        mLessonUser.setNextInterval(q);
+        if(q == 0 && mLessonUser == null)
+            return;
+        else if(mLessonUser == null) mLessonUser = new LessonUser();
+
+        mLessonUser.setNextInterval(q, mLesson.IsDone());
 
         mLessonUser.setLastDate(new Date());
         mLessonUser.setNextDate(calculateNextDate(mLessonUser));

@@ -90,7 +90,11 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
         TextView titleTextView = (TextView) view.findViewById(R.id.titleTextViewAdapter);
         TextView contentTextView = (TextView) view.findViewById(R.id.contentTextViewAdapter);
         Button bt = (Button) view.findViewById(R.id.buttonAdapter);
-
+        view.findViewById(R.id.bookmark).setVisibility(View.GONE);
+        if(item.IsDone()){
+            bt.setText(R.string.refazer);
+            view.findViewById(R.id.bookmark).setVisibility(View.VISIBLE);
+        }
         titleTextView.setText(item.getTitle());
         contentTextView.setText(item.getDescription());
 

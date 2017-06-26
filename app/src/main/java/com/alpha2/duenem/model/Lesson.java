@@ -14,6 +14,7 @@ import java.util.List;
  */
 
 public class Lesson implements Serializable {
+    private Boolean isDone;
     private String title;
     private String description;
     private String uid;
@@ -41,12 +42,14 @@ public class Lesson implements Serializable {
         materials = new ArrayList<>();
         title = "";
         description = "";
+        isDone = false;
     }
 
     public Lesson(String title, String description){
         this.title = title;
         this.description = description;
         materials = new ArrayList<>();
+        isDone = false;
     }
 
 
@@ -74,4 +77,13 @@ public class Lesson implements Serializable {
     public void addMaterial(Material material) {
         materials.add(material);
     }
+
+    public void setIsDone(Boolean isDone){
+        this.isDone = isDone;
+    }
+    public boolean IsDone(){
+        return this.isDone;
+    }
+
+
 }
