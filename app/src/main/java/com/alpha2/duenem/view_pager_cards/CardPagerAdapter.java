@@ -23,7 +23,8 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
     private List<CardView> mViews;
     private List<Lesson> mData;
     private float mBaseElevation;
-    Context context;
+    private Context context;
+
     public CardPagerAdapter(Context context) {
         mData = new ArrayList<>();
         mViews = new ArrayList<>();
@@ -33,6 +34,13 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter {
     public void addLesson(Lesson item) {
         mViews.add(null);
         mData.add(item);
+        this.notifyDataSetChanged();
+    }
+
+    public void clearLessons() {
+        mViews.clear();
+        mData.clear();
+        this.notifyDataSetChanged();
     }
 
     public float getBaseElevation() {

@@ -39,7 +39,6 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     private static final String TAG = SignInActivity.class.getSimpleName();
 
     private GoogleApiClient mGoogleApiClient;
-    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +70,6 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
                 signOutButtonClicked();
             }
         });
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override

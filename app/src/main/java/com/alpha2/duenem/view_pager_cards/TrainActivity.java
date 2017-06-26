@@ -14,6 +14,8 @@ import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.R;
 import com.alpha2.duenem.model.LessonUser;
+import com.alpha2.duenem.model.Topic;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -36,7 +38,6 @@ public class TrainActivity extends BaseActivity {
         mViewPager = (ViewPager) contentView.findViewById(R.id.viewPagerLesson);
         mCardAdapter = new CardPagerAdapter(this);
         populateAdapter();
-        initiateList();
     }
 
     private void initiateList() {
@@ -48,34 +49,46 @@ public class TrainActivity extends BaseActivity {
     }
 
     public void populateAdapter() {
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-        String userUid = mAuth.getCurrentUser().getUid();
-        final Query lessonUsersQuery = DBHelper.getLessonUsersByUser(userUid).orderByChild("nextDate");
-        ValueEventListener lessonsUserListener;
+        if (firebaseUser != null) {
+            String userUid = firebaseUser.getUid();
+            final Query lessonUsersQuery = DBHelper.getLessonUsersByUser(userUid).orderByChild("nextDate");
+            ValueEventListener lessonsUserListener;
 
-        lessonsUserListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot lessonUserSnap : dataSnapshot.getChildren()) {
-                    getLessonAndAddToList(lessonUserSnap);
+            lessonsUserListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    mCardAdapter.clearLessons();
+
+                    for (DataSnapshot lessonUserSnap : dataSnapshot.getChildren()) {
+                        getLessonAndAddToList(lessonUserSnap);
+                    }
+
+                    initiateList();
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, databaseError.getMessage());
-                Toast.makeText(TrainActivity.this, "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
-                        .show();
-            }
 
-        };
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e(TAG, databaseError.getMessage());
 
-        lessonUsersQuery.addValueEventListener(lessonsUserListener);
+                }
+
+            };
+
+            lessonUsersQuery.addValueEventListener(lessonsUserListener);
+        } else {
+            Toast.makeText(TrainActivity.this, "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
+                    .show();
+        }
     }
 
     private void getLessonAndAddToList(DataSnapshot lessonUserSnap) {
         LessonUser lessonUser = lessonUserSnap.getValue(LessonUser.class);
         final Date nextDate = lessonUser.getNextDate();
         final Date nowDate = new Date();
+        final Topic topic = new Topic();
+        topic.setUid(lessonUser.getUidTopic());
 
         Query lessonQuery = DBHelper.getLesson(lessonUser.getUidTopic(), lessonUserSnap.getKey());
 
@@ -84,8 +97,11 @@ public class TrainActivity extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Lesson lesson = dataSnapshot.getValue(Lesson.class);
 
+                Log.d(TAG, nextDate.toString() + " " + nowDate.toString());
                 if (lesson != null && !nextDate.after(nowDate)) {
-                        mCardAdapter.addLesson(lesson);
+                    lesson.setUid(dataSnapshot.getKey());
+                    lesson.setTopic(topic);
+                    mCardAdapter.addLesson(lesson);
                 }
             }
 
