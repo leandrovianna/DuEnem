@@ -14,12 +14,14 @@ public class LessonUser implements Serializable {
     private int correctStreak;
     private Date nextDate;
     private double EF;
+    private int interval;
     private static SimpleDateFormat dateFormat;
 
     public LessonUser() {
         if (dateFormat == null)
             dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         this.EF = 1.3;
+        this.interval = 1;
     }
 
     public LessonUser(Date lastDate, int correctStreak, Date nextDate) {
@@ -28,6 +30,7 @@ public class LessonUser implements Serializable {
         this.correctStreak = correctStreak;
         this.nextDate = nextDate;
         this.EF = 1.3;
+        this.interval = 1;
     }
 
     @Exclude
@@ -82,8 +85,28 @@ public class LessonUser implements Serializable {
         return this.EF;
     }
 
-    public void setNextEF(int q){
+    private void setNextEF(int q){
         EF = EF+(0.1-(5-q)*(0.08+(5-q)*0.02));
         if(EF < 1.3) EF = 1.3;
+    }
+
+    public void setNextInterval(int q){
+        if (q < 3) {
+            interval = 1;
+            correctStreak = 0;
+        }
+        else if(correctStreak == 0) {
+            interval = 1;
+            correctStreak++;
+        }
+        else if(correctStreak == 1) {
+            interval = 4;
+            correctStreak++;
+        }
+        else {
+            setNextEF(q);
+            interval = (int) (interval * EF);
+            correctStreak++;
+        }
     }
 }
