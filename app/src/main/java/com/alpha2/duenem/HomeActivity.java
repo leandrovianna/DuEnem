@@ -75,9 +75,7 @@ public class HomeActivity extends BaseActivity {
                 public void onCancelled(DatabaseError databaseError) {
                     Log.e(TAG, databaseError.getMessage());
                     mAdapter.clear();
-                    Toast.makeText(HomeActivity.this,
-                            "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
-                            .show();
+
                 }
 
             };

@@ -33,9 +33,8 @@ public abstract class IntentAbstractFactory {
         return intent;
     }
 
-    public static Intent createTrainActivity(Activity source, Topic topic) {
+    public static Intent createTrainActivity(Activity source) {
         Intent intent = new Intent(source, TrainActivity.class);
-        intent.putExtra(LessonActivity.TOPIC_EXTRA, topic);
         return intent;
     }
 }

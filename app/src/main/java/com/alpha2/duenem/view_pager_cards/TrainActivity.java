@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 
 import com.alpha2.duenem.BaseActivity;
@@ -22,6 +23,7 @@ public class TrainActivity extends BaseActivity {
     private static final String TAG = LessonActivity.class.getSimpleName();
     private ViewPager mViewPager;
 
+    private Lesson train_lesson;
     private CardPagerAdapter mCardAdapter;
     private ShadowTransformer mCardShadowTransformer;
 
@@ -34,10 +36,9 @@ public class TrainActivity extends BaseActivity {
         mViewPager = (ViewPager) contentView.findViewById(R.id.viewPagerLesson);
 
         mCardAdapter = new CardPagerAdapter(this);
+        populateAdapter();
 
-        final Topic topic = (Topic) getIntent().getSerializableExtra(TOPIC_EXTRA);
-
-        setTitle(topic.getTitle());
+        setTitle("Treinar");
         initiateList();
     }
 
@@ -47,5 +48,64 @@ public class TrainActivity extends BaseActivity {
         mViewPager.setAdapter(mCardAdapter);
         mViewPager.setPageTransformer(false, mCardShadowTransformer);
         mViewPager.setOffscreenPageLimit(3);
+    }
+
+    public void populateAdapter(){
+
+        String userUid = mAuth.getCurrentUser().getUid();
+        final Query lessonUsersQuery = DBHelper.getLessonsByUser(userUid);
+        ValueEventListener mLessonsUserListener;
+        mLessonsUserListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot topicSnap : dataSnapshot.getChildren()) {
+                    Lesson lesson = getLessonByUid(topicSnap.getKey());
+
+                    if (lesson != null) {
+                        mCardAdapter.addLesson(lesson);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, databaseError.getMessage());
+                Toast.makeText(TrainActivity.this, "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
+                        .show();
+            }
+
+        };
+        lessonUsersQuery.addValueEventListener(mLessonsUserListener);
+
+
+    }
+
+    private Lesson getLessonByUid(final String lessonUid){
+        train_lesson = null;
+        ValueEventListener mLessonListener;
+        Query mLesson;
+
+        mLesson = DBHelper.getLessonByUid(lessonUid);
+        mLessonListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                train_lesson = dataSnapshot.getValue(Lesson.class);
+                if (train_lesson != null) {
+                    train_lesson.setUid(dataSnapshot.getKey());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, databaseError.getMessage());
+                Toast.makeText(TrainActivity.this,
+                        "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
+                        .show();
+            }
+
+        };
+        mLesson.addValueEventListener(mLessonListener);
+
+        return train_lesson;
     }
 }
