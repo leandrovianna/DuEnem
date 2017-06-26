@@ -2,7 +2,6 @@ package com.alpha2.duenem;
 
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +18,6 @@ import com.alpha2.duenem.model.Question;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -119,7 +117,7 @@ public class QuestionActivity extends BaseActivity {
 
     private void initiate() {
         String userUid = mAuth.getCurrentUser().getUid();
-        final Query lessonUsersQuery = DBHelper.getLessonsByUser(userUid)
+        final Query lessonUsersQuery = DBHelper.getLessonUsersByUser(userUid)
                 .child(mLesson.getUid());
 
         lessonUsersQuery.addValueEventListener(new ValueEventListener() {
@@ -280,9 +278,10 @@ public class QuestionActivity extends BaseActivity {
 
         mLessonUser.setLastDate(new Date());
         mLessonUser.setNextDate(calculateNextDate(mLessonUser));
+        mLessonUser.setUidTopic(mLesson.getTopic().getUid());
 
         String userUid = mAuth.getCurrentUser().getUid();
-        DatabaseReference lessonUserRef = DBHelper.getLessonsByUser(userUid)
+        DatabaseReference lessonUserRef = DBHelper.getLessonUsersByUser(userUid)
                 .child(mLesson.getUid());
 
         lessonUserRef.setValue(mLessonUser);

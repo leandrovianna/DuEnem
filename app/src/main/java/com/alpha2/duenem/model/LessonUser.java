@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LessonUser implements Serializable {
-    private String UidTopic;
+    private String uidTopic;
     private Date lastDate;
     private int correctStreak;
     private Date nextDate;
@@ -114,10 +114,10 @@ public class LessonUser implements Serializable {
     }
 
     public String getUidTopic() {
-        return UidTopic;
+        return uidTopic;
     }
 
     public void setUidTopic(String uidTopic) {
-        UidTopic = uidTopic;
+        this.uidTopic = uidTopic;
     }
 }

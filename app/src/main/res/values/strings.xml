@@ -38,4 +38,6 @@
     <string name="lesson_result_message">Vocẽ acertou %1$d de %2$d questões.</string>
     <string name="lesson_conclude">\"Parabéns, você concluiu a lição\"</string>
 
+    <string name="title_train_activity">Treinar</string>
+
 </resources>

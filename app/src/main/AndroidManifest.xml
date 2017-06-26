@@ -27,7 +27,7 @@
             android:theme="@style/AppTheme.NoActionBar.Third" />
         <activity
             android:name=".view_pager_cards.TrainActivity"
-            android:label="@string/title_activity_lesson"
+            android:label="@string/title_train_activity"
             android:theme="@style/AppTheme.NoActionBar.Third" />
         <activity
             android:name=".RankingActivity"

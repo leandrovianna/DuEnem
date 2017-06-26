@@ -1,5 +1,7 @@
 package com.alpha2.duenem.model;
 
+import android.widget.Toast;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Exclude;
 
@@ -15,6 +17,15 @@ public class Lesson implements Serializable {
     private String title;
     private String description;
     private String uid;
+    private Topic topic;
+
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
 
     public String getUid() {
         return uid;

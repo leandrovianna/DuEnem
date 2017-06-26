@@ -2,6 +2,7 @@ package com.alpha2.duenem.view_pager_cards;
 
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +14,6 @@ import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.R;
 import com.alpha2.duenem.model.LessonUser;
-import com.alpha2.duenem.model.Topic;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -22,11 +22,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Date;
 
 public class TrainActivity extends BaseActivity {
-    public static final String TOPIC_EXTRA = "com.alpha2.duenem.topic_extra";
-    private static final String TAG = LessonActivity.class.getSimpleName();
+    private static final String TAG = TrainActivity.class.getSimpleName();
     private ViewPager mViewPager;
 
-    private Lesson train_lesson;
     private CardPagerAdapter mCardAdapter;
     private ShadowTransformer mCardShadowTransformer;
 
@@ -35,13 +33,9 @@ public class TrainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         View contentView = setContentLayout(R.layout.content_lesson);
-
         mViewPager = (ViewPager) contentView.findViewById(R.id.viewPagerLesson);
-
         mCardAdapter = new CardPagerAdapter(this);
         populateAdapter();
-
-        setTitle("Treinar");
         initiateList();
     }
 
@@ -53,25 +47,17 @@ public class TrainActivity extends BaseActivity {
         mViewPager.setOffscreenPageLimit(3);
     }
 
-    public void populateAdapter(){
+    public void populateAdapter() {
 
         String userUid = mAuth.getCurrentUser().getUid();
-        final Query lessonUsersQuery = DBHelper.getLessonsByUser(userUid).orderByChild("nextDate");
-        ValueEventListener mLessonsUserListener;
+        final Query lessonUsersQuery = DBHelper.getLessonUsersByUser(userUid).orderByChild("nextDate");
+        ValueEventListener lessonsUserListener;
 
-        mLessonsUserListener = new ValueEventListener() {
+        lessonsUserListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int cont = 0;
-                for (DataSnapshot topicSnap : dataSnapshot.getChildren()) {
-                    LessonUser lessonUser = topicSnap.getValue(LessonUser.class);
-                    Date nextDate = lessonUser.getNextDate();
-                    Lesson lesson = getLessonByUid(topicSnap.getKey(), lessonUser.getUidTopic());
-
-                    if (lesson != null && !nextDate.after(new Date()) && cont <= 10 ) {
-                        mCardAdapter.addLesson(lesson);
-                        cont++;
-                    }
+                for (DataSnapshot lessonUserSnap : dataSnapshot.getChildren()) {
+                    getLessonAndAddToList(lessonUserSnap);
                 }
             }
             @Override
@@ -82,38 +68,31 @@ public class TrainActivity extends BaseActivity {
             }
 
         };
-        lessonUsersQuery.addValueEventListener(mLessonsUserListener);
 
-
+        lessonUsersQuery.addValueEventListener(lessonsUserListener);
     }
 
-    private Lesson getLessonByUid(final String lessonUid, final String topicUid){
-        train_lesson = null;
-        ValueEventListener mLessonListener;
-        Query mLesson;
+    private void getLessonAndAddToList(DataSnapshot lessonUserSnap) {
+        LessonUser lessonUser = lessonUserSnap.getValue(LessonUser.class);
+        final Date nextDate = lessonUser.getNextDate();
+        final Date nowDate = new Date();
 
-        mLesson = DBHelper.getLessonsByUidTopic(topicUid);
-        mLessonListener = new ValueEventListener() {
+        Query lessonQuery = DBHelper.getLesson(lessonUser.getUidTopic(), lessonUserSnap.getKey());
+
+        lessonQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                train_lesson = dataSnapshot.child(lessonUid).getValue(Lesson.class);
-                if (train_lesson != null) {
-                    train_lesson.setUid(dataSnapshot.getKey());
-                }
+                Lesson lesson = dataSnapshot.getValue(Lesson.class);
 
+                if (lesson != null && !nextDate.after(nowDate)) {
+                        mCardAdapter.addLesson(lesson);
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, databaseError.getMessage());
-                Toast.makeText(TrainActivity.this,
-                        "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
-                        .show();
+                Log.w(TAG, databaseError.getMessage());
             }
-
-        };
-        mLesson.addValueEventListener(mLessonListener);
-
-        return train_lesson;
+        });
     }
 }

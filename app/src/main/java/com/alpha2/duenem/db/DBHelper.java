@@ -22,6 +22,11 @@ public abstract class DBHelper {
                 .getReference("lesson").child(topicUid);
     }
 
+    public static Query getLesson(String topicUid, String lessonUid) {
+        return FirebaseDatabase.getInstance().getReference()
+                .child("lesson").child(topicUid).child(lessonUid);
+    }
+
     public static Query getMaterialsFromLesson(String lessonUid) {
         return FirebaseDatabase.getInstance()
                 .getReference("material").child(lessonUid);
@@ -32,14 +37,11 @@ public abstract class DBHelper {
                 .child("user");
     }
 
-    public static DatabaseReference getLessonsByUser(String userUid) {
+    public static DatabaseReference getLessonUsersByUser(String userUid) {
         return FirebaseDatabase.getInstance().getReference()
                 .child("lessonUser").child(userUid);
     }
 
-    public static DatabaseReference getLessonsByUidTopic(String TopicUid){
-        return FirebaseDatabase.getInstance().getReference().child("lesson").child(TopicUid);
-    }
     public static Query getQueryRanking() {
         return DBHelper.getUsers().orderByChild("points").limitToFirst(100);
     }

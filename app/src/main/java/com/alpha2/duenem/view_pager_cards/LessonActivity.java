@@ -47,6 +47,7 @@ public class LessonActivity extends BaseActivity {
                     Lesson l = lessonSnap.getValue(Lesson.class);
                     if (l != null) {
                         l.setUid(lessonSnap.getKey());
+                        l.setTopic(topic);
                         mCardAdapter.addLesson(l);
                     }
                     initiateList();
