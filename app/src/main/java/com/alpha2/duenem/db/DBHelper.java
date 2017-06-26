@@ -37,10 +37,12 @@ public abstract class DBHelper {
                 .child("lessonUser").child(userUid);
     }
 
-    public static DatabaseReference getLessonByUid(String LessonUid){
-        return FirebaseDatabase.getInstance().getReference().child("lesson").child(LessonUid);
+    public static DatabaseReference getLessonsByUidTopic(String TopicUid){
+        return FirebaseDatabase.getInstance().getReference().child("lesson").child(TopicUid);
     }
     public static Query getQueryRanking() {
         return DBHelper.getUsers().orderByChild("points").limitToFirst(100);
     }
+
+
 }

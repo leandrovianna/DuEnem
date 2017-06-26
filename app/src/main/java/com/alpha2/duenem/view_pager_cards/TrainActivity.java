@@ -64,9 +64,10 @@ public class TrainActivity extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int cont = 0;
                 for (DataSnapshot topicSnap : dataSnapshot.getChildren()) {
-                    Lesson lesson = getLessonByUid(topicSnap.getKey());
                     LessonUser lessonUser = topicSnap.getValue(LessonUser.class);
                     Date nextDate = lessonUser.getNextDate();
+                    Lesson lesson = getLessonByUid(topicSnap.getKey(), lessonUser.getUidTopic());
+
                     if (lesson != null && !nextDate.after(new Date()) && cont <= 10 ) {
                         mCardAdapter.addLesson(lesson);
                         cont++;
@@ -86,16 +87,16 @@ public class TrainActivity extends BaseActivity {
 
     }
 
-    private Lesson getLessonByUid(final String lessonUid){
+    private Lesson getLessonByUid(final String lessonUid, final String topicUid){
         train_lesson = null;
         ValueEventListener mLessonListener;
         Query mLesson;
 
-        mLesson = DBHelper.getLessonByUid(lessonUid);
+        mLesson = DBHelper.getLessonsByUidTopic(topicUid);
         mLessonListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                train_lesson = dataSnapshot.getValue(Lesson.class);
+                train_lesson = dataSnapshot.child(lessonUid).getValue(Lesson.class);
                 if (train_lesson != null) {
                     train_lesson.setUid(dataSnapshot.getKey());
                 }
