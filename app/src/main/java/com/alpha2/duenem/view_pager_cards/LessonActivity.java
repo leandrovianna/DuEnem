@@ -51,6 +51,7 @@ public class LessonActivity extends BaseActivity {
             setTitle(topic.getTitle());
 
             Query lessonQuery = DBHelper.getLessonsFromTopic(topic.getUid());
+            lessonQuery.keepSynced(true);
             lessonQuery.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

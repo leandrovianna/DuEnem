@@ -55,8 +55,8 @@ public class QuestionActivity extends BaseActivity {
         mLesson = (Lesson) getIntent().getSerializableExtra(LESSON_EXTRA);
         this.setTitle(mLesson.getTitle());
 
-        Query materialsQuery = DBHelper.getMaterialsFromLesson(mLesson.getUid());
-        materialsQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        final Query materialsQuery = DBHelper.getMaterialsFromLesson(mLesson.getUid());
+        materialsQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mLesson.getMaterial().clear();
@@ -73,6 +73,7 @@ public class QuestionActivity extends BaseActivity {
                 }
 
                 initiate();
+                materialsQuery.removeEventListener(this);
             }
 
             @Override
@@ -165,12 +166,11 @@ public class QuestionActivity extends BaseActivity {
         textTitle.setText(getString(R.string.material_title, currentMaterial +1));
         textContent.setText(material.getText());
 
-        findViewById(R.id.radioGroupQuestion).setVisibility(View.GONE);
-
         if (material instanceof Question) {
             setContentQuestion((Question) material, currentMaterial +1);
         } else {
             ChangeButtonState();
+            findViewById(R.id.radioGroupQuestion).setVisibility(View.INVISIBLE);
             contCorrect++; //material count like question corrected
         }
     }
