@@ -40,5 +40,6 @@
 
     <string name="title_train_activity">Treinar</string>
     <string name="refazer">Refazer</string>
+    <string name="user_unauthorized_message">É necessário estar logado para usar o app.</string>
 
 </resources>

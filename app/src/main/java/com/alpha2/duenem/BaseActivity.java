@@ -79,6 +79,13 @@ public abstract class BaseActivity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
 
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                updateDrawerHeaderUI(DuEnemApplication.getInstance().getUser());
+            }
+        };
+
         Query disciplinesQuery = DBHelper.getDisciplines();
 
         disciplinesQuery.addValueEventListener(new ValueEventListener() {
@@ -117,26 +124,26 @@ public abstract class BaseActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        mAuth.removeAuthStateListener(mAuthStateListener);
+        super.onStop();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                updateDrawerHeaderUI(DuEnemApplication.getInstance().getUser());
-            }
-        };
-
-        mAuth.addAuthStateListener(mAuthStateListener);
-
         updateDrawerHeaderUI(DuEnemApplication.getInstance().getUser());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        mAuth.removeAuthStateListener(mAuthStateListener);
     }
 
     @Override
@@ -213,7 +220,7 @@ public abstract class BaseActivity extends AppCompatActivity
             username.setText(user.getName());
             email.setText(user.getEmail());
         } else {
-            avatar.setImageResource(R.mipmap.ic_launcher);
+            avatar.setImageResource(R.drawable.default_user_photo);
             username.setText(getString(R.string.app_name));
             email.setText("");
         }
@@ -235,7 +242,7 @@ public abstract class BaseActivity extends AppCompatActivity
 
         @Override
         public void onBitmapFailed(Drawable errorDrawable) {
-            mView.setImageResource(R.mipmap.ic_launcher);
+            mView.setImageResource(R.drawable.default_user_photo);
         }
 
         @Override

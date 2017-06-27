@@ -2,6 +2,7 @@ package com.alpha2.duenem;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,12 +33,14 @@ public class DisciplineActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentLayout(R.layout.content_discipline);
+        final View contentView = setContentLayout(R.layout.content_discipline);
 
         Discipline discipline = (Discipline) getIntent().getSerializableExtra(DISCIPLINE_EXTRA);
         mTopicRef = null;
 
         if (discipline != null) {
+
+            setTitle(discipline.getName());
 
             mAdapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_list_item_1, new ArrayList<Topic>());
@@ -74,7 +77,8 @@ public class DisciplineActivity extends BaseActivity {
                 public void onCancelled(DatabaseError databaseError) {
                     Log.e(TAG, databaseError.getMessage());
                     mAdapter.clear();
-
+                    Snackbar.make(contentView, R.string.user_unauthorized_message, Snackbar.LENGTH_INDEFINITE)
+                            .show();
                 }
 
             };

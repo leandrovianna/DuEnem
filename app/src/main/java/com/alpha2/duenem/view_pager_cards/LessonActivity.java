@@ -2,6 +2,7 @@ package com.alpha2.duenem.view_pager_cards;
 
 import android.os.Bundle;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -24,15 +25,15 @@ public class LessonActivity extends BaseActivity {
     private static final String TAG = LessonActivity.class.getSimpleName();
     private ViewPager mViewPager;
     private CardPagerAdapter mCardAdapter;
-    private ShadowTransformer mCardShadowTransformer;
+    private View mContentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View contentView = setContentLayout(R.layout.content_lesson);
+        mContentView = setContentLayout(R.layout.content_lesson);
 
-        mViewPager = (ViewPager) contentView.findViewById(R.id.viewPagerLesson);
+        mViewPager = (ViewPager) mContentView.findViewById(R.id.viewPagerLesson);
 
         mCardAdapter = new CardPagerAdapter(this);
 
@@ -43,31 +44,37 @@ public class LessonActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        final Topic topic = (Topic) getIntent().getSerializableExtra(TOPIC_EXTRA);
+        if (DuEnemApplication.getInstance().getUser() != null) {
 
-        setTitle(topic.getTitle());
+            final Topic topic = (Topic) getIntent().getSerializableExtra(TOPIC_EXTRA);
 
-        Query lessonQuery = DBHelper.getLessonsFromTopic(topic.getUid());
-        lessonQuery.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mCardAdapter.clearLessons();
+            setTitle(topic.getTitle());
 
-                for (DataSnapshot lessonSnap : dataSnapshot.getChildren()) {
-                    Lesson l = lessonSnap.getValue(Lesson.class);
-                    if (l != null) {
-                        l.setUid(lessonSnap.getKey());
-                        l.setTopic(topic);
-                        verifyIfUserDoneLesson(l);
+            Query lessonQuery = DBHelper.getLessonsFromTopic(topic.getUid());
+            lessonQuery.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    mCardAdapter.clearLessons();
+
+                    for (DataSnapshot lessonSnap : dataSnapshot.getChildren()) {
+                        Lesson l = lessonSnap.getValue(Lesson.class);
+                        if (l != null) {
+                            l.setUid(lessonSnap.getKey());
+                            l.setTopic(topic);
+                            verifyIfUserDoneLesson(l);
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, databaseError.getMessage());
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.w(TAG, databaseError.getMessage());
+                }
+            });
+        } else {
+            Snackbar.make(mContentView, R.string.user_unauthorized_message, Snackbar.LENGTH_INDEFINITE)
+                    .show();
+        }
     }
 
     private void verifyIfUserDoneLesson(final Lesson lesson) {
@@ -90,7 +97,7 @@ public class LessonActivity extends BaseActivity {
     }
 
     private void initiateList() {
-        mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
+        ShadowTransformer mCardShadowTransformer = new ShadowTransformer(mViewPager, mCardAdapter);
 
         mViewPager.setAdapter(mCardAdapter);
         mViewPager.setPageTransformer(false, mCardShadowTransformer);
