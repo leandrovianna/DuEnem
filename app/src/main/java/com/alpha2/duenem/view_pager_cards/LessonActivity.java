@@ -21,7 +21,6 @@ public class LessonActivity extends BaseActivity {
     public static final String TOPIC_EXTRA = "com.alpha2.duenem.topic_extra";
     private static final String TAG = LessonActivity.class.getSimpleName();
     private ViewPager mViewPager;
-    private Boolean isDone;
     private CardPagerAdapter mCardAdapter;
     private ShadowTransformer mCardShadowTransformer;
 
@@ -48,8 +47,7 @@ public class LessonActivity extends BaseActivity {
                     if (l != null) {
                         l.setUid(lessonSnap.getKey());
                         l.setTopic(topic);
-                        l.setIsDone(VerifyIsDone(l));
-                        mCardAdapter.addLesson(l);
+                        verifyIfUserDoneLesson(l);
                     }
                     initiateList();
                 }
@@ -62,23 +60,22 @@ public class LessonActivity extends BaseActivity {
         });
     }
 
-    private Boolean VerifyIsDone(final Lesson lesson) {
-         isDone = false;
+    private void verifyIfUserDoneLesson(final Lesson lesson) {
 
         Query lessonQuery = DBHelper.getLessonUsersByUser(mAuth.getCurrentUser().getUid());
         lessonQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild(lesson.getUid())) isDone = true;
+                lesson.setIsDone(dataSnapshot.hasChild(lesson.getUid()));
+                mCardAdapter.addLesson(lesson);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.w(TAG, databaseError.getMessage());
             }
         });
 
-        return isDone;
     }
 
     private void initiateList() {
