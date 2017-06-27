@@ -1,6 +1,7 @@
 package com.alpha2.duenem;
 
 import android.content.Intent;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -9,20 +10,27 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
+        setContentLayout(R.layout.activity_main);
 
-        FirebaseUser user = auth.getCurrentUser();
+        FirebaseUser user = mAuth.getCurrentUser();
 
-        Intent intent = (user != null)
-                ? IntentAbstractFactory.createHomeActivityIntent(this, null)
-                : IntentAbstractFactory.createSignInActivityIntent(this);
-        startActivity(intent);
-        finish();
+        if (user == null) {
+            Intent intent = IntentAbstractFactory.createSignInActivityIntent(this);
+            startActivity(intent);
+            finish();
+        }
+
+        mDrawer.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 }

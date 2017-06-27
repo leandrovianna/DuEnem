@@ -4,17 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.alpha2.duenem.model.Discipline;
-import com.alpha2.duenem.model.Topic;
 import com.alpha2.duenem.signin.SignInActivity;
-import com.alpha2.duenem.view_pager_cards.LessonActivity;
 import com.alpha2.duenem.view_pager_cards.TrainActivity;
 
 public abstract class IntentAbstractFactory {
 
-    public static Intent createHomeActivityIntent(Activity source, Discipline discipline) {
-        Intent intent = new Intent(source, HomeActivity.class);
+    public static Intent createDisciplineActivityIntent(Activity source, Discipline discipline) {
+        Intent intent = new Intent(source, DisciplineActivity.class);
         intent.putExtra(BaseActivity.SELECTED_ITEM_ID_EXTRA, R.id.materialestudo);
-        intent.putExtra(HomeActivity.DISCIPLINE_EXTRA, discipline);
+        intent.putExtra(DisciplineActivity.DISCIPLINE_EXTRA, discipline);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }

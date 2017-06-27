@@ -23,14 +23,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Discipline;
-import com.alpha2.duenem.model.Lesson;
-import com.alpha2.duenem.model.LessonUser;
-import com.alpha2.duenem.model.Topic;
-import com.alpha2.duenem.signin.SignInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,22 +35,19 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-public class BaseActivity extends AppCompatActivity
+public abstract class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
     protected static final String SELECTED_ITEM_ID_EXTRA = "com.alpha2.duenem.selected_item_id";
 
-    private DrawerLayout mDrawer;
+    protected DrawerLayout mDrawer;
     private ActionBarDrawerToggle mToggle;
     private NavigationView mNavigationView;
 
     protected FirebaseAuth mAuth;
     private ProfilePhotoTarget mProfilePhotoHandler;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-
-    private Topic train_topic;
-    private Lesson train_lesson;
 
     protected View setContentLayout(int contentLayoutResId) {
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -100,7 +92,7 @@ public class BaseActivity extends AppCompatActivity
                     if (d != null) {
                         d.setUid(disciplineSnap.getKey());
                         final Intent intent = IntentAbstractFactory
-                                .createHomeActivityIntent(BaseActivity.this, d);
+                                .createDisciplineActivityIntent(BaseActivity.this, d);
 
                         disciplinesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, d.getName())
                                 .setIcon(R.drawable.ic_description_black_24dp)

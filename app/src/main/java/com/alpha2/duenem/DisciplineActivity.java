@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Discipline;
@@ -20,9 +19,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends BaseActivity {
+public class DisciplineActivity extends BaseActivity {
 
-    private static final String TAG = HomeActivity.class.getSimpleName();
+    private static final String TAG = DisciplineActivity.class.getSimpleName();
     private ArrayAdapter<Topic> mAdapter;
 
     private ValueEventListener mTopicRefListener;
@@ -33,7 +32,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentLayout(R.layout.content_home);
+        setContentLayout(R.layout.content_discipline);
 
         Discipline discipline = (Discipline) getIntent().getSerializableExtra(DISCIPLINE_EXTRA);
         mTopicRef = null;
@@ -49,7 +48,7 @@ public class HomeActivity extends BaseActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Topic t = (Topic) parent.getItemAtPosition(position);
-                    Intent intent = new Intent(HomeActivity.this, LessonActivity.class);
+                    Intent intent = new Intent(DisciplineActivity.this, LessonActivity.class);
                     intent.putExtra(LessonActivity.TOPIC_EXTRA, t);
                     startActivity(intent);
                 }
