@@ -81,7 +81,7 @@ public class Lesson implements Serializable {
     public void setIsDone(Boolean isDone){
         this.isDone = isDone;
     }
-    public boolean IsDone(){
+    public boolean isDone(){
         return this.isDone;
     }
 

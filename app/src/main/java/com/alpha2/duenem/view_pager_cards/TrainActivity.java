@@ -10,11 +10,13 @@ import android.widget.Toast;
 
 
 import com.alpha2.duenem.BaseActivity;
+import com.alpha2.duenem.DuEnemApplication;
 import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.R;
 import com.alpha2.duenem.model.LessonUser;
 import com.alpha2.duenem.model.Topic;
+import com.alpha2.duenem.model.User;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,10 +51,10 @@ public class TrainActivity extends BaseActivity {
     }
 
     public void populateAdapter() {
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        User user = DuEnemApplication.getInstance().getUser();
 
-        if (firebaseUser != null) {
-            String userUid = firebaseUser.getUid();
+        if (user != null) {
+            String userUid = user.getUid();
             final Query lessonUsersQuery = DBHelper.getLessonUsersByUser(userUid).orderByChild("nextDate");
             ValueEventListener lessonsUserListener;
 
@@ -101,6 +103,7 @@ public class TrainActivity extends BaseActivity {
                 if (lesson != null && !nextDate.after(nowDate)) {
                     lesson.setUid(dataSnapshot.getKey());
                     lesson.setTopic(topic);
+                    lesson.setIsDone(false);
                     mCardAdapter.addLesson(lesson);
                 }
             }

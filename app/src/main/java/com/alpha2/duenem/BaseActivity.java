@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Discipline;
+import com.alpha2.duenem.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity
     private ActionBarDrawerToggle mToggle;
     private NavigationView mNavigationView;
 
-    protected FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
     private ProfilePhotoTarget mProfilePhotoHandler;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
@@ -122,13 +123,13 @@ public abstract class BaseActivity extends AppCompatActivity
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                updateDrawerHeaderUI(firebaseAuth.getCurrentUser());
+                updateDrawerHeaderUI(DuEnemApplication.getInstance().getUser());
             }
         };
 
         mAuth.addAuthStateListener(mAuthStateListener);
 
-        updateDrawerHeaderUI(mAuth.getCurrentUser());
+        updateDrawerHeaderUI(DuEnemApplication.getInstance().getUser());
     }
 
     @Override
@@ -199,7 +200,7 @@ public abstract class BaseActivity extends AppCompatActivity
         return false;
     }
 
-    private void updateDrawerHeaderUI(FirebaseUser user) {
+    private void updateDrawerHeaderUI(User user) {
         View headerView = mNavigationView.getHeaderView(0);
         ImageView avatar = (ImageView) headerView.findViewById(R.id.avatar);
         mProfilePhotoHandler = new ProfilePhotoTarget(avatar);
@@ -207,11 +208,9 @@ public abstract class BaseActivity extends AppCompatActivity
         TextView email = (TextView) headerView.findViewById(R.id.email);
 
         if (user != null) {
-            Log.d(TAG, "User photo url: "+user.getPhotoUrl());
-
             Picasso.with(this).load(user.getPhotoUrl()).into(mProfilePhotoHandler);
 
-            username.setText(user.getDisplayName());
+            username.setText(user.getName());
             email.setText(user.getEmail());
         } else {
             avatar.setImageResource(R.mipmap.ic_launcher);

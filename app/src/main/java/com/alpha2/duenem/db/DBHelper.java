@@ -46,5 +46,7 @@ public abstract class DBHelper {
         return DBHelper.getUsers().orderByChild("points").limitToFirst(100);
     }
 
-
+    public static DatabaseReference getRoot() {
+        return FirebaseDatabase.getInstance().getReference();
+    }
 }

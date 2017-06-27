@@ -8,10 +8,12 @@ import android.view.View;
 
 
 import com.alpha2.duenem.BaseActivity;
+import com.alpha2.duenem.DuEnemApplication;
 import com.alpha2.duenem.db.DBHelper;
 import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.R;
 import com.alpha2.duenem.model.Topic;
+import com.alpha2.duenem.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -34,6 +36,13 @@ public class LessonActivity extends BaseActivity {
 
         mCardAdapter = new CardPagerAdapter(this);
 
+        initiateList();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         final Topic topic = (Topic) getIntent().getSerializableExtra(TOPIC_EXTRA);
 
         setTitle(topic.getTitle());
@@ -42,6 +51,8 @@ public class LessonActivity extends BaseActivity {
         lessonQuery.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mCardAdapter.clearLessons();
+
                 for (DataSnapshot lessonSnap : dataSnapshot.getChildren()) {
                     Lesson l = lessonSnap.getValue(Lesson.class);
                     if (l != null) {
@@ -49,7 +60,6 @@ public class LessonActivity extends BaseActivity {
                         l.setTopic(topic);
                         verifyIfUserDoneLesson(l);
                     }
-                    initiateList();
                 }
             }
 
@@ -61,9 +71,10 @@ public class LessonActivity extends BaseActivity {
     }
 
     private void verifyIfUserDoneLesson(final Lesson lesson) {
+        User user = DuEnemApplication.getInstance().getUser();
 
-        Query lessonQuery = DBHelper.getLessonUsersByUser(mAuth.getCurrentUser().getUid());
-        lessonQuery.addValueEventListener(new ValueEventListener() {
+        Query lessonQuery = DBHelper.getLessonUsersByUser(user.getUid());
+        lessonQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 lesson.setIsDone(dataSnapshot.hasChild(lesson.getUid()));

@@ -5,6 +5,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.alpha2.duenem.model.User;
 import com.alpha2.duenem.signin.SignInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,7 +19,7 @@ public class MainActivity extends BaseActivity {
 
         setContentLayout(R.layout.activity_main);
 
-        FirebaseUser user = mAuth.getCurrentUser();
+        User user = DuEnemApplication.getInstance().getUser();
 
         if (user == null) {
             Intent intent = IntentAbstractFactory.createSignInActivityIntent(this);

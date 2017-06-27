@@ -15,7 +15,7 @@ import com.alpha2.duenem.model.Lesson;
 import com.alpha2.duenem.model.LessonUser;
 import com.alpha2.duenem.model.Material;
 import com.alpha2.duenem.model.Question;
-import com.google.firebase.auth.FirebaseUser;
+import com.alpha2.duenem.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +25,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class QuestionActivity extends BaseActivity {
@@ -33,11 +35,11 @@ public class QuestionActivity extends BaseActivity {
     private static final String TAG = QuestionActivity.class.getSimpleName();
     public static final String LESSON_EXTRA = "lesson_extra";
 
-    private int correct_alternative;
-    private int current_material;
+    private int correctAlternative;
+    private int currentMaterial;
     private List<Material> materials;
-    private int cont_correct = 0;
-    private boolean is_question = false;
+    private int contCorrect = 0;
+    private boolean isQuestion = false;
     private SUBMIT_BUTTON_STATES buttonState;
     private Lesson mLesson;
     private LessonUser mLessonUser;
@@ -61,15 +63,16 @@ public class QuestionActivity extends BaseActivity {
 
                 for (DataSnapshot materialSnap : dataSnapshot.getChildren()) {
                     if (materialSnap.child("alternatives").exists()) {
-                        is_question = true;
+                        isQuestion = true;
                         Question q = materialSnap.getValue(Question.class);
                         mLesson.addMaterial(q);
                     } else {
                         Material m = materialSnap.getValue(Material.class);
                         mLesson.addMaterial(m);
                     }
-                    initiate();
                 }
+
+                initiate();
             }
 
             @Override
@@ -87,24 +90,24 @@ public class QuestionActivity extends BaseActivity {
                 if(buttonState == SUBMIT_BUTTON_STATES.VERIFY) {
                     RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroupQuestion);
                     int selectedId = radioGroup.getCheckedRadioButtonId();
-                    int i_selected = -1;
+                    int iSelected = -1;
                     if (selectedId == findViewById(R.id.radioBt1).getId())
-                        i_selected = 0;
+                        iSelected = 0;
                     else if (selectedId == findViewById(R.id.radioBt2).getId())
-                        i_selected = 1;
+                        iSelected = 1;
                     else if (selectedId == findViewById(R.id.radioBt3).getId())
-                        i_selected = 2;
+                        iSelected = 2;
                     else if (selectedId == findViewById(R.id.radioBt4).getId())
-                        i_selected = 3;
+                        iSelected = 3;
                     else if (selectedId == findViewById(R.id.radioBt5).getId())
-                        i_selected = 4;
+                        iSelected = 4;
 
-                    if (i_selected == correct_alternative) {
-                        cont_correct++;
+                    if (iSelected == correctAlternative) {
+                        contCorrect++;
                         ShowCorrect();
                         ChangeButtonState();
                     } else {
-                        ShowIncorrect(correct_alternative);
+                        ShowIncorrect(correctAlternative);
                         ChangeButtonState();
                     }
                 }
@@ -117,10 +120,10 @@ public class QuestionActivity extends BaseActivity {
     }
 
     private void initiate() {
-        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        User user = DuEnemApplication.getInstance().getUser();
 
-        if (firebaseUser != null) {
-            String userUid = firebaseUser.getUid();
+        if (user != null) {
+            String userUid = user.getUid();
             final Query lessonUsersQuery = DBHelper.getLessonUsersByUser(userUid)
                     .child(mLesson.getUid());
 
@@ -139,19 +142,19 @@ public class QuestionActivity extends BaseActivity {
             });
 
             materials = mLesson.getMaterial();
-            current_material = -1;
+            currentMaterial = -1;
             nextQuestion();
         }
     }
 
     public void nextQuestion(){
-        current_material++;
-        ((ProgressBar)findViewById(R.id.progressBarQuestion)).setProgress((current_material *100)/ materials.size());
-        if(current_material >= materials.size()){
+        currentMaterial++;
+        ((ProgressBar)findViewById(R.id.progressBarQuestion)).setProgress((currentMaterial *100)/ materials.size());
+        if(currentMaterial >= materials.size()){
             endLesson();
         }
         else{
-            setContent(materials.get(current_material));
+            setContent(materials.get(currentMaterial));
         }
     }
 
@@ -159,16 +162,16 @@ public class QuestionActivity extends BaseActivity {
         TextView textTitle = (TextView) findViewById(R.id.textTitleQuestion);
         TextView textContent = (TextView) findViewById(R.id.textContentQuestion);
 
-        textTitle.setText(getString(R.string.material_title, current_material+1));
+        textTitle.setText(getString(R.string.material_title, currentMaterial +1));
         textContent.setText(material.getText());
 
         findViewById(R.id.radioGroupQuestion).setVisibility(View.GONE);
 
         if (material instanceof Question) {
-            setContentQuestion((Question) material, current_material+1);
+            setContentQuestion((Question) material, currentMaterial +1);
         } else {
             ChangeButtonState();
-            cont_correct++; //material count like question corrected
+            contCorrect++; //material count like question corrected
         }
     }
 
@@ -189,7 +192,7 @@ public class QuestionActivity extends BaseActivity {
             radioButton.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorQuestionDefault, null));
             radioButton.setChecked(false);
             if(list.get(i) == 0)
-                correct_alternative = i;
+                correctAlternative = i;
         }
     }
 
@@ -231,10 +234,11 @@ public class QuestionActivity extends BaseActivity {
             buttonState = SUBMIT_BUTTON_STATES.VERIFY;
         }
     }
+
     private void endLesson(){
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroupQuestion);
         radioGroup.setVisibility(View.INVISIBLE);
-        int grade = (cont_correct * 100) / materials.size();
+        int grade = (contCorrect * 100) / materials.size();
 
         TextView text1 = (TextView) findViewById(R.id.textTitleQuestion);
         TextView text2 = (TextView) findViewById(R.id.textContentQuestion);
@@ -249,7 +253,7 @@ public class QuestionActivity extends BaseActivity {
         });
 
 
-        if(!is_question){
+        if(!isQuestion){
             text1.setText(R.string.lesson_conclude);
             text2.setText("");
             return;
@@ -262,7 +266,7 @@ public class QuestionActivity extends BaseActivity {
             text1.setText(R.string.end_lesson_fail_message);
         }
 
-        text2.setText(getString(R.string.lesson_result_message, cont_correct, materials.size()));
+        text2.setText(getString(R.string.lesson_result_message, contCorrect, materials.size()));
 
         setUserLessonResult(grade);
     }
@@ -275,21 +279,28 @@ public class QuestionActivity extends BaseActivity {
         else if(grade >= 50) q = 2;
         else if(grade >= 30) q = 1;
 
-        if(q == 0 && mLessonUser == null)
-            return;
-        else if(mLessonUser == null) mLessonUser = new LessonUser();
+        if (mLessonUser == null) {
+            if (q == 0) return;
+            else mLessonUser = new LessonUser();
+        }
 
-        mLessonUser.setNextInterval(q, mLesson.IsDone());
+        mLessonUser.setNextInterval(q, mLesson.isDone());
 
         mLessonUser.setLastDate(new Date());
         mLessonUser.setNextDate(calculateNextDate(mLessonUser));
         mLessonUser.setUidTopic(mLesson.getTopic().getUid());
 
-        String userUid = mAuth.getCurrentUser().getUid();
-        DatabaseReference lessonUserRef = DBHelper.getLessonUsersByUser(userUid)
-                .child(mLesson.getUid());
+        User user = DuEnemApplication.getInstance().getUser();
 
-        lessonUserRef.setValue(mLessonUser);
+        DatabaseReference root = DBHelper.getRoot();
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put(String.format("lessonUser/%s/%s", user.getUid(), mLesson.getUid()), mLessonUser);
+
+        if (!mLesson.isDone())
+            updates.put(String.format("user/%s/points", user.getUid()), user.getPoints() + q * 20);
+
+        root.updateChildren(updates);
     }
 
     private Date calculateNextDate(LessonUser lessonUser) {

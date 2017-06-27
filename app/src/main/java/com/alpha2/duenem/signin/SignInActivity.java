@@ -39,6 +39,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     private static final String TAG = SignInActivity.class.getSimpleName();
 
     private GoogleApiClient mGoogleApiClient;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
         setContentLayout(R.layout.content_sign_in);
 
         mAuth = FirebaseAuth.getInstance();
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.google_play_console_web_client_id))
