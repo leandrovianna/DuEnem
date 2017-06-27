@@ -39,7 +39,13 @@ public class TrainActivity extends BaseActivity {
         View contentView = setContentLayout(R.layout.content_lesson);
         mViewPager = (ViewPager) contentView.findViewById(R.id.viewPagerLesson);
         mCardAdapter = new CardPagerAdapter(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         populateAdapter();
+        initiateList();
     }
 
     private void initiateList() {
@@ -66,19 +72,15 @@ public class TrainActivity extends BaseActivity {
                     for (DataSnapshot lessonUserSnap : dataSnapshot.getChildren()) {
                         getLessonAndAddToList(lessonUserSnap);
                     }
-
-                    initiateList();
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     Log.e(TAG, databaseError.getMessage());
-
                 }
-
             };
 
-            lessonUsersQuery.addValueEventListener(lessonsUserListener);
+            lessonUsersQuery.addListenerForSingleValueEvent(lessonsUserListener);
         } else {
             Toast.makeText(TrainActivity.this, "É necessário estar logado para usar o app.", Toast.LENGTH_LONG)
                     .show();
