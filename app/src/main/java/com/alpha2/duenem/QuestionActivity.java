@@ -60,6 +60,7 @@ public class QuestionActivity extends BaseActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mLesson.getMaterial().clear();
+                materialsQuery.removeEventListener(this);
 
                 for (DataSnapshot materialSnap : dataSnapshot.getChildren()) {
                     if (materialSnap.child("alternatives").exists()) {
@@ -73,7 +74,6 @@ public class QuestionActivity extends BaseActivity {
                 }
 
                 initiate();
-                materialsQuery.removeEventListener(this);
             }
 
             @Override
@@ -150,11 +150,13 @@ public class QuestionActivity extends BaseActivity {
 
     public void nextQuestion(){
         currentMaterial++;
+
         ((ProgressBar)findViewById(R.id.progressBarQuestion)).setProgress((currentMaterial *100)/ materials.size());
-        if(currentMaterial >= materials.size()){
+
+        if (currentMaterial >= materials.size()) {
             endLesson();
         }
-        else{
+        else {
             setContent(materials.get(currentMaterial));
         }
     }
@@ -170,13 +172,15 @@ public class QuestionActivity extends BaseActivity {
             setContentQuestion((Question) material, currentMaterial +1);
         } else {
             ChangeButtonState();
-            findViewById(R.id.radioGroupQuestion).setVisibility(View.INVISIBLE);
+            findViewById(R.id.radioGroupQuestion).setVisibility(View.GONE);
             contCorrect++; //material count like question corrected
         }
     }
 
-    private void setContentQuestion(Question question, int l){
-        findViewById(R.id.radioGroupQuestion).setVisibility(View.VISIBLE);
+    private void setContentQuestion(Question question, int l) {
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroupQuestion);
+        radioGroup.clearCheck();
+        radioGroup.setVisibility(View.VISIBLE);
 
         TextView textTitle = (TextView) findViewById(R.id.textTitleQuestion);
         textTitle.setText(getString(R.string.question_title, l));
@@ -190,7 +194,6 @@ public class QuestionActivity extends BaseActivity {
             RadioButton radioButton = (RadioButton)findViewById(ListId[i]);
             radioButton.setText(question.getTextAlternative(list.get(i)));
             radioButton.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorQuestionDefault, null));
-            radioButton.setChecked(false);
             if(list.get(i) == 0)
                 correctAlternative = i;
         }
@@ -237,7 +240,7 @@ public class QuestionActivity extends BaseActivity {
 
     private void endLesson(){
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroupQuestion);
-        radioGroup.setVisibility(View.INVISIBLE);
+        radioGroup.setVisibility(View.GONE);
         int grade = (contCorrect * 100) / materials.size();
 
         TextView text1 = (TextView) findViewById(R.id.textTitleQuestion);
